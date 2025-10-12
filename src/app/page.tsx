@@ -1,8 +1,7 @@
-import Home from "./components/Home";
-import Hero3D from "./components/Home";
-import Navbar from "./components/Navbar";
+"use client"
+import dynamic from "next/dynamic";
 import Footer from "./components/Footer"
-
+const Home = dynamic(() => import("./components/Home"), { ssr: false });
 export default function App() {
   return (
     <>

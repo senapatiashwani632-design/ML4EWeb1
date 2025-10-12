@@ -46,7 +46,6 @@
 //     </div>
 //   );
 // }
-"use client"
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Sphere, Line } from "@react-three/drei";
