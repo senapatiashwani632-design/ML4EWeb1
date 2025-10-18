@@ -99,47 +99,55 @@ export default function Navbar() {
                 exit="exit"
                 onClick={() => setIsOpen(false)}
               />
+
               <motion.div
-                className="fixed inset-0 z-50 flex flex-col justify-center items-center"
+                className="fixed inset-0 z-50 flex flex-col justify-center items-start px-8"
                 variants={ANIMATIONS.menuContainer}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
               >
                 <motion.div
-                  className="flex flex-col items-center gap-6 px-4"
+                  className="flex flex-col items-start gap-6 w-full"
                   variants={ANIMATIONS.menuContainer}
                 >
                   {mainLinks.map((item) => {
                     if (item === "Resources") {
                       return (
-                        <div
+                        <motion.div
                           key="resources"
-                          className="flex flex-col items-center"
+                          variants={ANIMATIONS.menuItem}
+                          className="flex flex-col items-start w-full"
                         >
-                          <motion.button
-                            onClick={() => setShowDropdown(!showDropdown)}
-                            className="text-xl text-white hover:text-blue-300 transition-colors py-2 px-4 rounded-lg hover:bg-white/5"
+                          {/* Title */}
+                          <motion.span
+                            className="text-xl text-white font-semibold mb-2"
+                            variants={ANIMATIONS.menuItem}
                           >
-                            Resources ▾
-                          </motion.button>
-                          {showDropdown && (
-                            <div className="flex flex-col items-center gap-2 mt-2">
-                              <a
-                                href="/onlineresources"
-                                className="text-white text-base hover:text-blue-300"
-                              >
-                                Online Resources
-                              </a>
-                              <a
-                                href="/books"
-                                className="text-white text-base hover:text-blue-300"
-                              >
-                                Books
-                              </a>
-                            </div>
-                          )}
-                        </div>
+                            Resources
+                          </motion.span>
+
+                          {/* Subsections with vertical blue line */}
+                          <motion.div
+                            className="flex flex-col items-start gap-2 border-l-2 border-blue-500 pl-4"
+                            variants={ANIMATIONS.menuItem}
+                          >
+                            <motion.a
+                              href="/onlineresources"
+                              className="text-white text-base hover:text-blue-300"
+                              variants={ANIMATIONS.menuItem}
+                            >
+                              Online Resources
+                            </motion.a>
+                            <motion.a
+                              href="/books"
+                              className="text-white text-base hover:text-blue-300"
+                              variants={ANIMATIONS.menuItem}
+                            >
+                              Books
+                            </motion.a>
+                          </motion.div>
+                        </motion.div>
                       );
                     }
 
@@ -148,7 +156,7 @@ export default function Navbar() {
                         key={item}
                         href={`#${item.toLowerCase()}`}
                         variants={ANIMATIONS.menuItem}
-                        className="text-xl text-white hover:text-blue-300 transition-colors py-2 px-4 rounded-lg hover:bg-white/5"
+                        className="text-xl text-white hover:text-blue-300 transition-colors py-2 rounded-lg hover:bg-white/5 w-full text-left"
                         onClick={() => setIsOpen(false)}
                       >
                         {item}
