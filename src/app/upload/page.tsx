@@ -71,7 +71,7 @@ const UploadPage: React.FC = () => {
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="hidden md:block md:w-1/2 relative">
         <Image
-          src="/clg.jpg"
+          src="https://res.cloudinary.com/dbnnd43kl/image/upload/v1760877041/Lucid_Origin_A_curious_cartoon_college_student_peeks_out_from__0_hsfh3l.jpg"
           alt="ml4e"
           fill
           style={{ objectFit: "cover" }}
