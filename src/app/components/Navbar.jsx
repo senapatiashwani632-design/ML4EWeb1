@@ -29,7 +29,8 @@ const ANIMATIONS = {
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdownResources, setShowDropdownResources] = useState(false);
+  const [showDropdownProjects, setShowDropdownProjects] = useState(false);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setIsOpen(false);
@@ -46,8 +47,8 @@ export default function Navbar() {
 
   const mainLinks = [
     "Home",
-    "Events",
     "Projects",
+    "Events",
     "Team",
     "Resources",
     "Contact",
@@ -119,7 +120,6 @@ export default function Navbar() {
                           variants={ANIMATIONS.menuItem}
                           className="flex flex-col items-start w-full"
                         >
-                          {/* Title */}
                           <motion.span
                             className="text-xl text-white font-semibold mb-2"
                             variants={ANIMATIONS.menuItem}
@@ -127,7 +127,6 @@ export default function Navbar() {
                             Resources
                           </motion.span>
 
-                          {/* Subsections with vertical blue line */}
                           <motion.div
                             className="flex flex-col items-start gap-2 border-l-2 border-blue-500 pl-4"
                             variants={ANIMATIONS.menuItem}
@@ -136,6 +135,7 @@ export default function Navbar() {
                               href="/onlineresources"
                               className="text-white text-base hover:text-blue-300"
                               variants={ANIMATIONS.menuItem}
+                              onClick={() => setIsOpen(false)}
                             >
                               Online Resources
                             </motion.a>
@@ -143,8 +143,48 @@ export default function Navbar() {
                               href="/books"
                               className="text-white text-base hover:text-blue-300"
                               variants={ANIMATIONS.menuItem}
+                              onClick={() => setIsOpen(false)}
                             >
                               Books
+                            </motion.a>
+                          </motion.div>
+                        </motion.div>
+                      );
+                    }
+
+                    if (item === "Projects") {
+                      return (
+                        <motion.div
+                          key="projects"
+                          variants={ANIMATIONS.menuItem}
+                          className="flex flex-col items-start w-full"
+                        >
+                          <motion.span
+                            className="text-xl text-white font-semibold mb-2"
+                            variants={ANIMATIONS.menuItem}
+                          >
+                            Projects
+                          </motion.span>
+
+                          <motion.div
+                            className="flex flex-col items-start gap-2 border-l-2 border-blue-500 pl-4"
+                            variants={ANIMATIONS.menuItem}
+                          >
+                            <motion.a
+                              href="/upload"
+                              className="text-white text-base hover:text-blue-300"
+                              variants={ANIMATIONS.menuItem}
+                              onClick={() => setIsOpen(false)}
+                            >
+                              Upload Projects
+                            </motion.a>
+                            <motion.a
+                              href="/projects"
+                              className="text-white text-base hover:text-blue-300"
+                              variants={ANIMATIONS.menuItem}
+                              onClick={() => setIsOpen(false)}
+                            >
+                              View Projects
                             </motion.a>
                           </motion.div>
                         </motion.div>
@@ -228,27 +268,71 @@ export default function Navbar() {
                 </button>
 
                 <motion.div
-                  className="flex flex-col md:flex-row md:flex-wrap items-center justify-center gap-6 max-w-4xl px-4"
+                  className="flex flex-wrap items-center justify-center gap-6 max-w-4xl px-4"
                   variants={ANIMATIONS.menuContainer}
                 >
                   {mainLinks.map((item) => {
+                    if (item === "Projects") {
+                      return (
+                        <div
+                          key="projects"
+                          className="relative group"
+                          onMouseEnter={() => setShowDropdownProjects(true)}
+                          onMouseLeave={() => setShowDropdownProjects(false)}
+                        >
+                          <motion.span
+                            className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5 cursor-pointer select-none"
+                            variants={ANIMATIONS.menuItem}
+                          >
+                            Projects ▾
+                          </motion.span>
+
+                          <AnimatePresence>
+                            {showDropdownProjects && (
+                              <motion.div
+                                className="absolute top-full left-0 mt-2 flex flex-col bg-white/10 border border-white/20 rounded-lg shadow-lg"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                              >
+                                <a
+                                  href="/upload"
+                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  Upload Projects
+                                </a>
+                                <a
+                                  href="/projects"
+                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  View Projects
+                                </a>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    }
+
                     if (item === "Resources") {
                       return (
                         <div
-                          key="resources-desktop"
+                          key="resources"
                           className="relative group"
-                          onMouseEnter={() => setShowDropdown(true)}
-                          onMouseLeave={() => setShowDropdown(false)}
+                          onMouseEnter={() => setShowDropdownResources(true)}
+                          onMouseLeave={() => setShowDropdownResources(false)}
                         >
                           <motion.span
-                            className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5"
+                            className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5 cursor-pointer select-none"
                             variants={ANIMATIONS.menuItem}
                           >
                             Resources ▾
                           </motion.span>
 
                           <AnimatePresence>
-                            {showDropdown && (
+                            {showDropdownResources && (
                               <motion.div
                                 className="absolute top-full left-0 mt-2 flex flex-col bg-white/10 border border-white/20 rounded-lg shadow-lg"
                                 initial={{ opacity: 0, y: -10 }}
@@ -258,12 +342,14 @@ export default function Navbar() {
                                 <a
                                   href="/onlineresources"
                                   className="px-4 py-2 text-white hover:bg-blue-500/20"
+                                  onClick={() => setIsOpen(false)}
                                 >
                                   Online Resources
                                 </a>
                                 <a
                                   href="/books"
                                   className="px-4 py-2 text-white hover:bg-blue-500/20"
+                                  onClick={() => setIsOpen(false)}
                                 >
                                   Books
                                 </a>
