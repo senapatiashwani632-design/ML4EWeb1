@@ -1,12 +1,5 @@
-// src/app/components/Footer.jsx
 "use client";
 import React from "react";
-
-/**
- * Optional global fix:
- * Add this to globals.css (or your layout)
- * :root { --sidebar-width: 100px; }  // adjust to match sidebar width
- */
 
 const Glow = ({ className = "" }) => (
   <div
@@ -22,113 +15,62 @@ export default function Footer() {
     <footer
       className="
         relative z-30 w-full overflow-hidden border-t border-cyan-500/20
-        bg-[#0b1117] text-slate-200 isolate
+        bg-[#0b1117] text-slate-200 isolate flex flex-col items-center
       "
-      style={{
-        // Default fallback: 105px sidebar width
-        paddingLeft: "var(--sidebar-width, 105px)",
-      }}
     >
       <Glow />
 
       {/* Container */}
-      <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-10">
+      <div className="relative w-full max-w-4xl px-4 py-12 sm:px-8 text-center">
         {/* Title */}
         <h2 className="mb-8 text-3xl font-extrabold tracking-wide text-cyan-200 drop-shadow-[0_0_18px_rgba(0,255,255,.45)]">
           ML4E
         </h2>
 
         {/* Cards */}
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2 place-items-center">
           {/* Faculty Advisor */}
-          <div className="rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 backdrop-blur">
-            <h3 className="mb-3 text-2xl font-bold text-cyan-200 drop-shadow-[0_0_12px_rgba(0,255,255,.4)]">
+          <div className="w-full max-w-sm rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 backdrop-blur text-left sm:text-center md:text-left">
+            <h3 className="mb-2 text-2xl font-bold text-cyan-200 drop-shadow-[0_0_12px_rgba(0,255,255,.4)]">
               Faculty Advisor
             </h3>
-            <p className="text-sm leading-6 text-slate-300">
-              Prof. Ayas Kanta Swain
-              <br />
+            <p className="text-base leading-6 text-slate-300">
+              Prof. Ayas Kanta Swain <br />
               Assistant Professor, ECE Department
             </p>
-
-            <p className="mt-3 text-sm text-slate-300">
-              Phone:{" "}
-              <a
-                className="text-cyan-200 hover:underline"
-                href="tel:066126462458"
-              >
-                0661-26462458
-              </a>
+            <p className="mt-2 text-sm text-slate-400">
+              Phone: 0661-26462458
             </p>
-
-            <div className="mt-3 flex flex-wrap gap-2 text-sm">
-              <a
-                href="mailto:swaina@nitrkl.ac.in"
-                className="inline-flex items-center gap-2 rounded-lg bg-cyan-400/10 px-3 py-1.5 font-medium text-cyan-200 ring-1 ring-cyan-400/30 hover:bg-cyan-400/20"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M4 6h16v12H4z"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                  <path
-                    d="m4 6 8 6 8-6"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                </svg>
-                swaina@nitrkl.ac.in
-              </a>
-            </div>
+            <a
+              href="mailto:swaina@nitrkl.ac.in"
+              className="mt-3 inline-flex items-center justify-center rounded-md bg-cyan-900/30 px-3 py-2 text-cyan-200 hover:bg-cyan-800/40 transition"
+            >
+              ✉️ swaina@nitrkl.ac.in
+            </a>
           </div>
 
           {/* President */}
-          <div className="rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 backdrop-blur">
-            <h3 className="mb-3 text-2xl font-bold text-cyan-200 drop-shadow-[0_0_12px_rgba(0,255,255,.4)]">
+          <div className="w-full max-w-sm rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 backdrop-blur text-left sm:text-center md:text-left">
+            <h3 className="mb-2 text-2xl font-bold text-cyan-200 drop-shadow-[0_0_12px_rgba(0,255,255,.4)]">
               President
             </h3>
-            <p className="text-sm leading-6 text-slate-300">
+            <p className="text-base leading-6 text-slate-300">
               Rudra Nandkishor Anjiwadekar
             </p>
-
-            <p className="mt-3 text-sm text-slate-300">
-              Phone:{" "}
-              <a
-                className="text-cyan-200 hover:underline"
-                href="tel:9022275481"
-              >
-                9022275481
-              </a>
-            </p>
-
-            <div className="mt-3 flex flex-wrap gap-2 text-sm">
-              <a
-                href="mailto:122me0896@nitrkl.ac.in"
-                className="inline-flex items-center gap-2 rounded-lg bg-cyan-400/10 px-3 py-1.5 font-medium text-cyan-200 ring-1 ring-cyan-400/30 hover:bg-cyan-400/20"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M4 6h16v12H4z"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                  <path
-                    d="m4 6 8 6 8-6"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                </svg>
-                122me0896@nitrkl.ac.in
-              </a>
-            </div>
+            <p className="mt-2 text-sm text-slate-400">Phone: 9022275481</p>
+            <a
+              href="mailto:122me0896@nitrkl.ac.in"
+              className="mt-3 inline-flex items-center justify-center rounded-md bg-cyan-900/30 px-3 py-2 text-cyan-200 hover:bg-cyan-800/40 transition"
+            >
+              ✉️ 122me0896@nitrkl.ac.in
+            </a>
           </div>
         </div>
 
         {/* Bottom line */}
         <div className="mt-12 rounded-2xl bg-white/5 p-5 text-center ring-1 ring-white/10 backdrop-blur">
           <p className="text-base font-semibold tracking-wide text-cyan-200 drop-shadow-[0_0_10px_rgba(0,255,255,.4)]">
-            Made with ❤ by Team ML4E
+            Made with ❤️ by Team ML4E
           </p>
           <p className="mt-2 text-xs text-slate-400">© {year}</p>
         </div>
