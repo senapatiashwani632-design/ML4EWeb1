@@ -14,11 +14,11 @@ export default function Footer() {
   return (
     <footer
       className="
-        relative z-30 w-full overflow-hidden border-t border-cyan-500/20
+        relative z-30 w-full overflow-hidden
         bg-[#0b1117] text-slate-200 isolate flex flex-col items-center
       "
     >
-      <Glow />
+      {/* <Glow /> */}
 
       {/* Container */}
       <div className="relative w-full max-w-4xl px-4 py-12 sm:px-8 text-center">
@@ -35,8 +35,8 @@ export default function Footer() {
               Faculty Advisor
             </h3>
             <p className="text-base leading-6 text-slate-300">
-              Prof. Ayas Kanta Swain <br />
-              Assistant Professor, ECE Department
+              Prof. Khalid Mirza <br />
+              Assistant Professor, BM-BT Department
             </p>
             <p className="mt-2 text-sm text-slate-400">
               Phone: 0661-26462458
@@ -55,14 +55,14 @@ export default function Footer() {
               President
             </h3>
             <p className="text-base leading-6 text-slate-300">
-              Rudra Nandkishor Anjiwadekar
+              Kunal Kushwaha
             </p>
-            <p className="mt-2 text-sm text-slate-400">Phone: 9022275481</p>
+            <p className="mt-2 text-sm text-slate-400">Phone: +91 70676 21946</p>
             <a
               href="mailto:122me0896@nitrkl.ac.in"
               className="mt-3 inline-flex items-center justify-center rounded-md bg-cyan-900/30 px-3 py-2 text-cyan-200 hover:bg-cyan-800/40 transition"
             >
-              ✉️ 122me0896@nitrkl.ac.in
+              ✉️ 123ee0291@nitrkl.ac.in
             </a>
           </div>
         </div>
