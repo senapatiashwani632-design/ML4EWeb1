@@ -4,11 +4,13 @@ const ProjectSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     techStack: { type: String, required: true },
-    description: { type: String, required: true  },
-    deployedLink: { type: String, required: true  },
-    githubLink: { type: String, required: true  },
+    description: { type: String },
+    githubLink: { type: String },
+    deployedLink: { type: String },
+    imageUrl: { type: String }, 
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Project || mongoose.model("Project", ProjectSchema);
+export default mongoose.models.Project ||
+  mongoose.model("Project", ProjectSchema);

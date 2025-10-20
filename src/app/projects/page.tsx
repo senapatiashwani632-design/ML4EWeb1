@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { Orbitron } from "next/font/google";
 import { FaGithub } from "react-icons/fa";
 
@@ -37,7 +38,6 @@ const ProjectsPage: React.FC = () => {
       try {
         const res = await fetch("/api/projects", { cache: "no-store" });
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || "Failed to fetch projects");
         setProjects(data);
       } catch (err: any) {
@@ -47,7 +47,6 @@ const ProjectsPage: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchProjects();
   }, []);
 
@@ -84,10 +83,25 @@ const ProjectsPage: React.FC = () => {
               className={`rounded-xl overflow-hidden border border-cyan-500/20 shadow-[0_0_25px_rgba(0,255,255,0.1)] hover:shadow-[0_0_35px_rgba(0,255,255,0.25)] transition duration-300 bg-gradient-to-br ${theme.bg}`}
             >
               <div className={`${theme.headerBg} py-4 px-6 text-center border-b border-cyan-400/30`}>
-                <h2 className={`text-2xl font-bold text-white tracking-wide ${orbitron.className}`}>
+                <h2
+                  className={`text-2xl font-bold text-white tracking-wide ${orbitron.className}`}
+                >
                   {project.name}
                 </h2>
               </div>
+
+              {project.imageUrl && (
+                <div className="relative w-full h-40 sm:h-48 border-b border-cyan-400/20">
+                  <Image
+                    src={project.imageUrl}
+                    alt={project.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    priority={false}
+                  />
+                </div>
+              )}
 
               <div className="p-6 text-white flex flex-col gap-3">
                 <p className="text-gray-300">

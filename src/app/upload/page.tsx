@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { FiUploadCloud } from "react-icons/fi";
 
 const UploadPage: React.FC = () => {
   const router = useRouter();
@@ -14,6 +15,8 @@ const UploadPage: React.FC = () => {
     deployed: "",
   });
 
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -22,26 +25,35 @@ const UploadPage: React.FC = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] || null;
+    setFile(selectedFile);
+    if (selectedFile) {
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage("");
 
     try {
+      const form = new FormData();
+      form.append("name", formData.projectName);
+      form.append("techStack", formData.techStack);
+      form.append("description", formData.description);
+      form.append("githubLink", formData.github);
+      form.append("deployedLink", formData.deployed);
+      if (file) form.append("screenshot", file);
+
       const res = await fetch("/api/projects", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.projectName,
-          techStack: formData.techStack,
-          description: formData.description,
-          githubLink: formData.github,
-          deployedLink: formData.deployed,
-        }),
+        body: form,
       });
 
       if (res.ok) {
-        setMessage(" Project submitted successfully!");
+        setMessage("Project submitted successfully!");
         setShowModal(true);
         setFormData({
           projectName: "",
@@ -50,18 +62,19 @@ const UploadPage: React.FC = () => {
           github: "",
           deployed: "",
         });
+        setFile(null);
+        setPreviewUrl(null);
 
-        // Redirect after 2 seconds
         setTimeout(() => {
           setShowModal(false);
           router.push("/projects");
         }, 2000);
       } else {
-        setMessage(" Failed to submit. Try again.");
+        setMessage("Failed to submit. Try again.");
       }
     } catch (err) {
       console.error(err);
-      setMessage(" Something went wrong.");
+      setMessage("Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
@@ -83,6 +96,7 @@ const UploadPage: React.FC = () => {
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-xl text-white p-6 sm:p-8 rounded-xl border border-blue-500 shadow-[0_0_15px_2px_rgba(100,149,237,0.4)] backdrop-blur-sm"
+          encType="multipart/form-data"
         >
           <h2 className="text-3xl font-bold mb-8 text-center">Submit Your Project</h2>
 
@@ -111,7 +125,7 @@ const UploadPage: React.FC = () => {
               required
               value={formData.techStack}
               onChange={handleChange}
-              placeholder="React, Node.js, MongoDB, FASTAPI, etc."
+              placeholder="React, Node.js, MongoDB, etc."
               className="w-full p-3 rounded bg-transparent border border-white placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -145,7 +159,7 @@ const UploadPage: React.FC = () => {
             />
           </div>
 
-          <div className="mb-8">
+          <div className="mb-6">
             <label htmlFor="deployed" className="block mb-2 text-lg font-semibold">
               Deployed Project Link
             </label>
@@ -157,6 +171,46 @@ const UploadPage: React.FC = () => {
               placeholder="https://yourproject.vercel.app"
               className="w-full p-3 rounded bg-transparent border border-white placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
+          </div>
+
+          <div className="mb-8">
+            <label htmlFor="screenshot" className="block mb-2 text-lg font-semibold">
+              Upload Screenshot or Certificate
+            </label>
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="screenshot"
+                className="flex items-center gap-2 px-4 py-2 border border-white rounded-lg cursor-pointer hover:bg-blue-500 transition"
+              >
+                <FiUploadCloud className="text-xl" />
+                <span>Select File</span>
+              </label>
+              <span className="text-sm text-gray-300">
+                {file ? file.name : "No file chosen"}
+              </span>
+            </div>
+            <input
+              id="screenshot"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
+            {previewUrl && (
+              <div className="mt-4">
+                <p className="text-sm mb-2 text-gray-300">Preview:</p>
+                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-blue-500">
+                  <Image
+                    src={previewUrl}
+                    alt="Preview"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-lg"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <button
@@ -180,7 +234,7 @@ const UploadPage: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-blue-600 text-white rounded-xl shadow-xl p-8 max-w-sm w-full text-center animate-fade-in">
-            <h2 className="text-2xl font-bold mb-4"> Project Submitted!</h2>
+            <h2 className="text-2xl font-bold mb-4">Project Submitted!</h2>
             <p className="text-gray-200 mb-6">
               Redirecting you to the projects page...
             </p>
