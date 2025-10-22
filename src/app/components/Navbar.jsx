@@ -201,7 +201,19 @@ export default function Navbar() {
                         </motion.div>
                       );
                     }
-
+                    if (item === "Team") {
+                      return (
+                        <motion.a
+                          key="team"
+                          href="/team"
+                          variants={ANIMATIONS.menuItem}
+                          className="text-xl text-white hover:text-blue-300 transition-colors py-2 rounded-lg hover:bg-white/5 w-full text-left"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Team
+                        </motion.a>
+                      );
+                    }
                     return (
                       <motion.a
                         key={item}
@@ -335,6 +347,19 @@ export default function Navbar() {
                             )}
                           </AnimatePresence>
                         </div>
+                      );
+                    }
+                    if (item === "Team") {
+                      return (
+                        <motion.a
+                          key="team"
+                          href="/team"
+                          variants={ANIMATIONS.menuItem}
+                          className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Team
+                        </motion.a>
                       );
                     }
 
