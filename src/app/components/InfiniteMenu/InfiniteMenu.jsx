@@ -912,38 +912,51 @@ const defaultItems = [
   }
 ];
 
-export default function InfiniteMenu({ items = [] }) {
+export default function InfiniteMenu({ items = [], onSelect }) {
   const canvasRef = useRef(null);
   const [activeItem, setActiveItem] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
-
+  const onSelectRef = useRef(onSelect);
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
+  
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // stable list for this instance
+    const list = items.length ? items : defaultItems;
     let sketch;
 
-    const handleActiveItem = index => {
-      const itemIndex = index % items.length;
-      setActiveItem(items[itemIndex]);
+    const handleActiveItem = (index) => {
+      const itemIndex = ((index % list.length) + list.length) % list.length;
+      const item = list[itemIndex];
+      setActiveItem(item);
+      // notify parent without causing this effect to re-run
+      onSelectRef.current?.(item, itemIndex);
     };
 
-    if (canvas) {
-      sketch = new InfiniteGridMenu(canvas, items.length ? items : defaultItems, handleActiveItem, setIsMoving, sk =>
-        sk.run()
-      );
-    }
+    sketch = new InfiniteGridMenu(
+      canvas,
+      list,
+      handleActiveItem,
+      setIsMoving,
+      (sk) => sk.run()
+    );
 
-    const handleResize = () => {
-      if (sketch) {
-        sketch.resize();
-      }
-    };
+    // initialize bottom panel without telling the WebGL to “snap” to 0
+    setActiveItem(list[0]);
+    onSelectRef.current?.(list[0], 0);
 
+    const handleResize = () => sketch?.resize();
     window.addEventListener('resize', handleResize);
     handleResize();
 
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+    // IMPORTANT: do NOT depend on `onSelect` here
   }, [items]);
 
   const handleButtonClick = () => {
