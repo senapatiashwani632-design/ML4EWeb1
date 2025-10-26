@@ -28,10 +28,12 @@ type InfiniteMenuProps = {
 };
 
 // Lazy import keeps this page client-only
-const InfiniteMenu = React.lazy(
-  () => import("@/app/components/InfiniteMenu/InfiniteMenu")
-);
 
+const InfiniteMenu = React.lazy(() =>
+  import("@/app/components/InfiniteMenu/InfiniteMenu") as Promise<{
+    default: React.ComponentType<InfiniteMenuProps>;
+  }>
+);
 // ===== Demo/Fallback projects =====
 const DUMMY_PROJECTS: Project[] = [
   {
