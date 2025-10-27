@@ -1,7 +1,6 @@
-"use client";
+'use client';
 
-import React, { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Orbitron } from "next/font/google";
 import { FaGithub } from "react-icons/fa";
@@ -17,86 +16,55 @@ const cardThemes = [
     headerBg: "bg-[#1E3A8A]",
     accent: "#60A5FA",
   },
+  {
+    bg: "from-[#0A0F1E] to-[#112240]",
+    headerBg: "bg-[#0EA5E9]",
+    accent: "#38BDF8",
+  },
+  {
+    bg: "from-[#1E293B] to-[#0F172A]",
+    headerBg: "bg-[#0284C7]",
+    accent: "#7DD3FC",
+  },
 ];
 
-// ===== Loading Screen =====
-function LoadingScreen() {
-  return (
-    <div className="relative grid min-h-screen place-items-center overflow-hidden bg-[#0b1117] text-slate-200">
-      <div className="pointer-events-none absolute inset-0 -z-10 blur-2xl opacity-70 [background:radial-gradient(50%_50%_at_20%_0%,rgba(34,211,238,.16),transparent_60%),radial-gradient(45%_45%_at_85%_15%,rgba(20,184,166,.14),transparent_60%),radial-gradient(40%_40%_at_50%_120%,rgba(56,189,248,.12),transparent_60%)]" />
-      <div className="flex flex-col items-center gap-6">
-        <div className="relative h-20 w-20">
-          <div className="absolute inset-0 animate-[spin_1.2s_linear_infinite] rounded-full border-4 border-cyan-300/30 border-t-cyan-300 shadow-[0_0_24px_rgba(34,211,238,.35)]" />
-          <div className="absolute inset-2 grid place-items-center rounded-full bg-black/40 backdrop-blur-xl">
-            <Image
-              src="/ml4e.svg"
-              alt="ML4E"
-              width={44}
-              height={44}
-              priority
-              className="opacity-95 drop-shadow-[0_0_12px_rgba(34,211,238,.45)] animate-[pulse_1.8s_ease-in-out_infinite]"
-            />
-          </div>
-        </div>
-        <div className="text-center">
-          <h2 className="text-xl font-semibold tracking-wide text-cyan-200 drop-shadow-[0_0_16px_rgba(0,255,255,.35)]">
-            Loading Projects
-          </h2>
-          <p className="mt-1 text-sm text-slate-400">
-            Fetching the latest curated projects…
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function ViewProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
+const ProjectsPage: React.FC = () => {
+  const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [usingFallback, setUsingFallback] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [error, setError] = useState("");
 
-  // Fetch from API or fallback
   useEffect(() => {
-    let alive = true;
-    (async () => {
+    const fetchProjects = async () => {
       try {
         const res = await fetch("/api/projects", { cache: "no-store" });
         const data = await res.json();
-        if (!res.ok) throw new Error(data?.error || "Failed to load projects");
-        if (!alive) return;
-        setProjects(data as Project[]);
-        setUsingFallback(false);
-      } catch {
-        if (!alive) return;
-        setProjects(DUMMY_PROJECTS);
-        setUsingFallback(true);
+        if (!res.ok) throw new Error(data.error || "Failed to fetch projects");
+        setProjects(data);
+      } catch (err: any) {
+        console.error("Error fetching projects:", err);
+        setError(err.message || "Something went wrong");
       } finally {
-        if (alive) setLoading(false);
+        setLoading(false);
       }
-    })();
-    return () => {
-      alive = false;
     };
+    fetchProjects();
   }, []);
 
-  const menuItems: MenuItem[] = useMemo(
-    () =>
-      projects.map((p) => ({
-        image: p.imageUrl || "https://picsum.photos/600/600?grayscale",
-        link: p.deployedLink || p.githubLink || "#",
-        title: p.name || "Untitled",
-        description:
-          p.description ||
-          (p.techStack ? `Built with ${p.techStack}` : "Explore this project"),
-      })),
-    [projects]
-  );
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-cyan-400 text-2xl font-bold">
+        Loading Projects...
+      </div>
+    );
+  }
 
-  const activeItem = menuItems[activeIndex] || menuItems[0];
-
-  if (loading) return <LoadingScreen />;
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500 text-xl font-semibold">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-[#050816] via-[#0A0F1E] to-[#0F172A] py-16 px-4 sm:px-8">
