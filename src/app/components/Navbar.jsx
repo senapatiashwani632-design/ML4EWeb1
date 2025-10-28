@@ -9,7 +9,7 @@ const ANIMATIONS = {
     visible: { opacity: 1, transition: { duration: 0.3 } },
     exit: { opacity: 0, transition: { duration: 0.3 } },
   },
- ok menuContainer: {
+ menuContainer: {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -76,7 +76,6 @@ export default function Navbar() {
       {/* ---------------- MOBILE NAV ---------------- */}
       <nav className="md:hidden fixed top-0 left-0 w-full bg-transparent z-[60]">
         <div className="flex justify-between items-center h-16 px-4">
-          <div className="text-blue-500 text-2xl font-bold">ML4E</div>
           {/* Logo */}
             <div className="w-12 h-12 rounded-full overflow-hidden  ">
             <svg 
@@ -302,7 +301,7 @@ export default function Navbar() {
               : "bg-white/10 backdrop-blur-lg border-r border-white/20 shadow-xl"
           }`}
         >
-          <div className="text-white text-2xl font-bold">ML4E</div>
+       
           {/* Logo */}
             <div className="w-12 h-12 rounded-full overflow-hidden  ">
             <svg 
