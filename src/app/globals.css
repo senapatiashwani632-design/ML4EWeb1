@@ -40,3 +40,35 @@ body {
     font-feature-settings: "ss01" on;
   }
 }  
+
+/* === Animated Background Helpers === */
+
+/* very small animation for soft breathing glow */
+@keyframes soft-breath {
+  0% {
+    opacity: 0.34;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.46;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0.34;
+    transform: scale(1);
+  }
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+/* ensure large blur utility for older Tailwind setups */
+.blur-3xl {
+  filter: blur(36px);
+}
+
+/* apply gentle breathing to radial lights */
+.pointer-events-none > .breath {
+  animation: soft-breath 5.5s ease-in-out infinite;
+}

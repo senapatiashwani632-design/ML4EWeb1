@@ -55,7 +55,12 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { motion } from "framer-motion";
 import { ReactTyped } from "react-typed";
 import Navbar from "./Navbar";
-
+const Glow = ({ className = "" }) => (
+  <div
+    className={`pointer-events-none absolute inset-0 -z-10 opacity-60 blur-2xl 
+      [background:radial-gradient(60%_60%_at_20%_0%,rgba(0,255,255,.15),transparent_60%),radial-gradient(50%_50%_at_90%_20%,rgba(0,255,200,.12),transparent_60%),radial-gradient(40%_40%_at_50%_120%,rgba(0,200,255,.1),transparent_60%)] ${className}`}
+  />
+);
 function AnimatedNeuralNode({ position, color, size = 0.08 }) {
   const ref = useRef();
 
@@ -159,9 +164,11 @@ export default function Home() {
   }
 
   return (
-    <div className="w-screen h-screen bg-black">
+    <div className="w-screen h-screen border-t border-cyan-500/20
+        bg-[#0b1117]">
       <Navbar/>
       <div className="absolute inset-0 flex md:left-10 items-center justify-center z-10 pointer-events-none">
+         <Glow />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
