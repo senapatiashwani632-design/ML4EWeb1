@@ -8,7 +8,7 @@ import { FaGithub } from "react-icons/fa";
 import { FiArrowUpRight } from "react-icons/fi";
 import NeuralBackground from "@/app/components/NeuralBackground";
 import { TypeAnimation } from "react-type-animation";
-import { motion } from "framer-motion"; // ✅ Added for animations
+import { motion } from "framer-motion"; 
 import DescriptionModal from "@/app/components/DescriptionModal";
 
 // === FONT CONFIGURATIONS ===
