@@ -231,7 +231,7 @@ export default function ViewProjectsPage() {
                             "hello world , this is a dummy description for the project page. Replace this with actual project descriptions . This project is very cool.",
                           ]}
                           wrapper="p"
-                          speed={150}
+                          speed={{ type: "keyStrokeDelayInMs", value: 30 }}
                           className={` 
                             text-gray-300 text-base 
                             ${isReversed ? "lg:text-left" : "lg:text-right"}
