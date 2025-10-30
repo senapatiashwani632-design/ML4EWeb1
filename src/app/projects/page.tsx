@@ -3,17 +3,26 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Orbitron } from "next/font/google";
+import { Orbitron, JetBrains_Mono } from "next/font/google";
 import { FaGithub } from "react-icons/fa";
-import NeuralBackground from "@/app/components/NeuralBackground"; 
+import { FiArrowUpRight } from "react-icons/fi";
+import NeuralBackground from "@/app/components/NeuralBackground";
+import { TypeAnimation } from "react-type-animation";
+import { motion } from "framer-motion"; 
+import DescriptionModal from "@/app/components/DescriptionModal";
 
+// === FONT CONFIGURATIONS ===
 const orbitron = Orbitron({
   subsets: ["latin"],
   weight: ["400", "700"],
 });
 
-// --- PLACEHOLDER TYPES & DATA ---
-// These are needed for the code to run
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+// === TYPES ===
 type Project = {
   _id: string;
   name: string;
@@ -31,11 +40,8 @@ type MenuItem = {
   description: string;
 };
 
-// Dummy data for fallback
 const DUMMY_PROJECTS: Project[] = [];
-// --- END PLACEHOLDERS ---
 
-// 1. REVERTED TO YOUR SINGLE-THEME ARRAY
 const cardThemes = [
   {
     bg: "from-[#0F172A] to-[#1E293B]",
@@ -44,7 +50,7 @@ const cardThemes = [
   },
 ];
 
-// ===== Loading Screen =====
+// === LOADING SCREEN COMPONENT ===
 function LoadingScreen() {
   return (
     <div className="relative grid min-h-screen place-items-center overflow-hidden bg-[#0b1117] text-slate-200">
@@ -76,13 +82,15 @@ function LoadingScreen() {
   );
 }
 
+// === MAIN COMPONENT ===
 export default function ViewProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [usingFallback, setUsingFallback] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  // Fetch from API or fallback
+  // === FETCH PROJECTS FROM BACKEND ===
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -106,6 +114,7 @@ export default function ViewProjectsPage() {
     };
   }, []);
 
+  // === MAP BACKEND DATA TO MENU FORMAT ===
   const menuItems: MenuItem[] = useMemo(
     () =>
       projects.map((p) => ({
@@ -123,10 +132,10 @@ export default function ViewProjectsPage() {
 
   if (loading) return <LoadingScreen />;
 
+  // === MAIN RENDER ===
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-b from-[#050816] via-[#0A0F1E] to-[#0F172A] py-16 px-4 sm:px-8">
-      
-      <NeuralBackground /> {/* <-- This is kept */}
+      <NeuralBackground />
 
       <div className="relative z-10">
         <h1
@@ -135,62 +144,132 @@ export default function ViewProjectsPage() {
           PROJECTS
         </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {/* === PROJECTS GRID === */}
+        <div className="flex flex-col gap-y-16 lg:gap-y-24 max-w-7xl mx-auto">
           {projects.map((project, index) => {
-            const theme = cardThemes[index % cardThemes.length]; 
+            const theme = cardThemes[index % cardThemes.length];
+            const isReversed = index % 2 !== 0;
+
             return (
-              <div
+              <motion.div
                 key={project._id || index}
-                //  HOVER EFFEC
-                className={`rounded-xl overflow-hidden border border-cyan-500/20 shadow-[0_0_25px_rgba(0,255,255,0.1)] hover:shadow-[0_0_35px_rgba(0,255,255,0.25)] transform transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br ${theme.bg}`}
+                className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-center"
+                initial={{ opacity: 0, y: 40 }} // 👇 fade & slide in
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                viewport={{ once: true }}
               >
-                <div
-                  className={`${theme.headerBg} py-4 px-6 text-center border-b border-cyan-400/30`}
+                {/* === IMAGE SECTION === */}
+                <motion.div
+                  className={`
+                    lg:col-span-3 w-full aspect-video rounded-lg overflow-hidden shadow-2xl 
+                    transition-all duration-300 hover:shadow-cyan-500/30
+                    ${isReversed ? "lg:order-last" : ""} 
+                  `}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 1.0, delay: 0.2 }}
+                  viewport={{ once: true }}
                 >
+                  <a
+                    href={project.deployedLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: theme.accent }}
+                  >
+                    {project.imageUrl && (
+                      <Image
+                        src={project.imageUrl}
+                        alt={project.name}
+                        width={1200}
+                        height={700}
+                        className="object-cover w-full h-full"
+                        priority={index === 0}
+                      />
+                    )}
+                  </a>
+                </motion.div>
+
+                {/* === TEXT / DETAILS SECTION === */}
+                <motion.div
+                  className={`
+                    lg:col-span-2 flex flex-col gap-4 
+                    ${isReversed ? "lg:items-start" : "lg:items-end"}
+                  `}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  {/* === PROJECT TITLE === */}
                   <h2
-                    className={`text-2xl font-bold text-white tracking-wide ${orbitron.className}`}
+                    className={`
+                      text-3xl font-bold text-white ${orbitron.className} 
+                      text-center w-full
+                    `}
                   >
                     {project.name}
                   </h2>
-                </div>
 
-                {project.imageUrl && (
-                  <div className="relative w-full h-40 sm:h-48 border-b border-cyan-400/20">
-                    <Image
-                      src={project.imageUrl}
-                      alt={project.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      priority={false}
-                    />
-                  </div>
-                )}
+                  {/* === DESCRIPTION BOX === */}
+                  {project.description && (
+                    <div
+                      className="bg-slate-800/60 backdrop-blur-md rounded-lg border border-slate-700 w-full cursor-pointer hover:border-cyan-600/50 transition-all overflow-hidden"
+                      onClick={() => setSelectedProject(project)}
+                    >
+                      {/* Window Header Style Dots */}
+                      <div className="flex items-center gap-2 p-3 bg-slate-900/50 border-b border-slate-700">
+                        <span className="block w-3 h-3 rounded-full bg-red-500"></span>
+                        <span className="block w-3 h-3 rounded-full bg-yellow-500"></span>
+                        <span className="block w-3 h-3 rounded-full bg-green-500"></span>
+                      </div>
 
-                <div className="p-6 text-white flex flex-col gap-3">
-                  <p className="text-gray-300">
+                      {/* Typing Animation Description */}
+                      <div className="p-6">
+                        <TypeAnimation
+                          sequence={[
+                            "hello world , this is a dummy description for the project page. Replace this with actual project descriptions . This project is very cool.",
+                          ]}
+                          wrapper="p"
+                          speed={{ type: "keyStrokeDelayInMs", value: 30 }}
+                          className={` 
+                            text-gray-300 text-base 
+                            ${isReversed ? "lg:text-left" : "lg:text-right"}
+                            ${jetbrainsMono.className} 
+                          `}
+                          style={{ whiteSpace: "pre-line" }}
+                          repeat={0}
+                          cursor={false}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* === TECH STACK TEXT === */}
+                  <p
+                    className={`text-gray-400 ${isReversed ? "lg:text-left" : "lg:text-right"}`}
+                  >
                     <strong>Tech Stack:</strong> {project.techStack}
                   </p>
 
-                  {project.description && (
-                    <p className="text-gray-400 text-sm italic">
-                      {project.description}
-                    </p>
-                  )}
-
-                  <div className="flex items-center justify-between mt-4">
+                  {/* === LINKS === */}
+                  <div
+                    className={`flex items-center gap-6 mt-2 ${
+                      isReversed ? "lg:justify-start" : "lg:justify-end"
+                    }`}
+                  >
                     {project.deployedLink && (
                       <a
                         href={project.deployedLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{ color: theme.accent }}
-                        className="underline hover:opacity-80 transition duration-200"
+                        className="flex items-center gap-2 text-lg hover:underline"
                       >
                         View Project
+                        <FiArrowUpRight />
                       </a>
                     )}
-
                     {project.githubLink && (
                       <a
                         href={project.githubLink}
@@ -203,12 +282,20 @@ export default function ViewProjectsPage() {
                       </a>
                     )}
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             );
           })}
         </div>
       </div>
+
+      {/* === DESCRIPTION MODAL === */}
+      {selectedProject && (
+        <DescriptionModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </div>
   );
 }
