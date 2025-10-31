@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Mail, Linkedin, Sparkles } from "lucide-react";
+import { Mail, Linkedin, Sparkles, GithubIcon } from "lucide-react";
+import DefaultProfile from "./DefaultProfile";
+interface DefaultProfileProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
+}
+
 
 interface TeamMember {
   name: string;
@@ -32,7 +40,7 @@ function TeamCard({ member }: TeamCardProps) {
 
   return (
     <motion.div
-      className="relative h-auto md:h-[440px] w-full group"
+      className="relative h-auto md:h-[400px] w-full group"
       onHoverStart={() => !isMobile && setIsHovered(true)}
       onHoverEnd={() => !isMobile && setIsHovered(false)}
       onTap={() => isMobile && setIsTouched((prev) => !prev)}
@@ -215,8 +223,9 @@ function TeamCard({ member }: TeamCardProps) {
             />
             
             {/* Avatar Image */}
+            {/* Avatar Image */}
             <div className="h-36 w-36 rounded-full ring-4 ring-white/20 relative z-10 transition-all duration-300 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900">
-              {!imageError ? (
+              {!imageError && member.avatar ? (
                 <img 
                   src={member.avatar} 
                   alt={member.name}
@@ -281,8 +290,8 @@ function TeamCard({ member }: TeamCardProps) {
               } : {}}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Mail size={18} className="text-white" />
-              <span className="text-white text-sm font-medium">Email</span>
+              <GithubIcon size={18} className="text-white" />
+              <span className="text-white text-sm font-medium">Github</span>
             </motion.a>
 
             {/* LinkedIn button */}
@@ -312,7 +321,7 @@ function TeamCard({ member }: TeamCardProps) {
           </motion.div>
 
           {/* Email text below - visible on hover/touch */}
-          <motion.p
+          {/* <motion.p
             className={`text-xs mt-4 text-center transition-all duration-300 ${
               shouldAnimate ? "text-blue-300 opacity-100" : "text-gray-500 opacity-70"
             }`}
@@ -327,99 +336,11 @@ function TeamCard({ member }: TeamCardProps) {
             }}
           >
             {member.email}
-          </motion.p>
+          </motion.p> */}
         </div>
       </div>
     </motion.div>
   );
 }
+export default TeamCard;
 
-// Demo component
-export default function TeamCardDemo() {
-  const teamMembers: TeamMember[] = [
-    {
-      name: "Sarah Johnson",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-      email: "sarah.johnson@company.com",
-      linkedin: "https://linkedin.com/in/sarahjohnson"
-    },
-    {
-      name: "Michael Chen",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-      email: "michael.chen@company.com",
-      linkedin: "https://linkedin.com/in/michaelchen"
-    },
-    {
-      name: "Emma Williams",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      email: "emma.williams@company.com",
-      linkedin: "https://linkedin.com/in/emmawilliams"
-    },
-    {
-      name: "David Martinez",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      email: "david.martinez@company.com",
-      linkedin: "https://linkedin.com/in/davidmartinez"
-    },
-    {
-      name: "Lisa Anderson",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
-      email: "lisa.anderson@company.com",
-      linkedin: "https://linkedin.com/in/lisaanderson"
-    },
-    {
-      name: "James Wilson",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
-      email: "james.wilson@company.com",
-      linkedin: "https://linkedin.com/in/jameswilson"
-    },
-    {
-      name: "Sophia Brown",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia",
-      email: "sophia.brown@company.com",
-      linkedin: "https://linkedin.com/in/sophiabrown"
-    },
-    {
-      name: "Ryan Taylor",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ryan",
-      email: "ryan.taylor@company.com",
-      linkedin: "https://linkedin.com/in/ryantaylor"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black p-8">
-      <div className="max-w-7xl mx-auto">
-        <motion.h1 
-          className="text-5xl font-bold text-white text-center mb-4"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Our Team
-        </motion.h1>
-        <motion.p 
-          className="text-gray-400 text-center mb-12 text-lg"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          Meet the amazing people behind our success
-        </motion.p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {teamMembers.map((member, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-            >
-              <TeamCard member={member} />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}

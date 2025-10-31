@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { div } from "framer-motion/client";
 
 const ANIMATIONS = {
   overlay: {
@@ -32,6 +33,7 @@ export default function Navbar() {
   const [showDropdownResources, setShowDropdownResources] = useState(false);
   const [showDropdownProjects, setShowDropdownProjects] = useState(false);
   const [showDropdownAchievements, setShowDropdownAchievements] = useState(false);
+  const [showDropDownTeams, setshowDropDownTeams] = useState(false);
 
   // ✅ Fixed keyboard listener for JSX
   useEffect(() => {
@@ -218,6 +220,44 @@ export default function Navbar() {
                         </motion.div>
                       );
                     }
+                     if (item === "Team") {
+                      return (
+                        <motion.div
+                          key="team"
+                          variants={ANIMATIONS.menuItem}
+                          className="flex flex-col items-start w-full"
+                        >
+                          <motion.span
+                            className="text-xl text-white font-semibold mb-2"
+                            variants={ANIMATIONS.menuItem}
+                          >
+                            Meet Our Team
+                          </motion.span>
+
+                          <motion.div
+                            className="flex flex-col items-start gap-2 border-l-2 border-blue-500 pl-4"
+                            variants={ANIMATIONS.menuItem}
+                          >
+                            <motion.a
+                              href="/team"
+                              className="text-white text-base hover:text-blue-300"
+                              variants={ANIMATIONS.menuItem}
+                              onClick={() => setIsOpen(false)}
+                            >
+                              Excecutive Body
+                            </motion.a>
+                            <motion.a
+                              href="/teams"
+                              className="text-white text-base hover:text-blue-300"
+                              variants={ANIMATIONS.menuItem}
+                              onClick={() => setIsOpen(false)}
+                            >
+                              Team Members
+                            </motion.a>
+                          </motion.div>
+                        </motion.div>
+                      );
+                    }
 
                     // ✅ Mobile Resources Dropdown
                     if (item === "Resources") {
@@ -370,8 +410,8 @@ export default function Navbar() {
                         <div
                           key="achievements"
                           className="relative group"
-                          onMouseEnter={() => setShowDropdownAchievements(true)}
-                          onMouseLeave={() => setShowDropdownAchievements(false)}
+                          onMouseEnter={() => setshowDropdownAchievements(true)}
+                          onMouseLeave={() => setshowDropdownAchievements(false)}
                         >
                           <motion.span
                             className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5 cursor-pointer select-none"
@@ -453,17 +493,47 @@ export default function Navbar() {
                         </div>
                       );
                     }
-                    if (item === "Team") {
+                     if (item === "Team") {
                       return (
-                        <motion.a
+                        <div
                           key="team"
-                          href="/team"
-                          variants={ANIMATIONS.menuItem}
-                          className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5"
-                          onClick={() => setIsOpen(false)}
+                          className="relative group"
+                          onMouseEnter={() => setshowDropDownTeams(true)}
+                          onMouseLeave={() => setshowDropDownTeams(false)}
                         >
-                          Team
-                        </motion.a>
+                          <motion.span
+                            className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5 cursor-pointer select-none"
+                            variants={ANIMATIONS.menuItem}
+                          >
+                            Meet Our Team ▾
+                          </motion.span>
+
+                          <AnimatePresence>
+                            {showDropDownTeams && (
+                              <motion.div
+                                className="absolute top-full left-0 mt-2 flex flex-col bg-white/10 border border-white/20 rounded-lg shadow-lg"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                              >
+                                <a
+                                  href="/team"
+                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  Executive Body
+                                </a>
+                                <a
+                                  href="/teams"
+                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  Team Members
+                                </a>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       );
                     }
 
