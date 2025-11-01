@@ -211,7 +211,7 @@ export default function TeamPage() {
               )}
 
               {/* Pager controls */}
-              <div className="ml-2 flex items-center gap-2">
+              {/* <div className="ml-2 flex items-center gap-2">
                 <button
                   type="button"
                   onClick={goPrev}
@@ -232,7 +232,7 @@ export default function TeamPage() {
                     <path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z" />
                   </svg>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -298,12 +298,12 @@ export default function TeamPage() {
                 Rotate the sphere above to highlight different team members. The details panel updates
                 instantly with their role and links.
               </p>
-              <p className="text-slate-400">
+              {/* <p className="text-slate-400">
                 Tip: Ensure your{" "}
                 <code className="mx-1 rounded bg-black/30 px-1 py-0.5 text-slate-200">InfiniteMenu</code> stores
                 <code className="mx-1 rounded bg-black/30 px-1 py-0.5 text-slate-200">onSelect</code> in a ref to
                 avoid resets.
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
