@@ -725,30 +725,58 @@ class InfiniteGridMenu {
     if (onInit) onInit(this);
   }
 
-  #initTexture() {
-    const gl = this.gl;
-    this.tex = createAndSetupTexture(gl, gl.LINEAR, gl.LINEAR, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE);
+#initTexture() {
+  const gl = this.gl;
+  this.tex = createAndSetupTexture(gl, gl.LINEAR, gl.LINEAR, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE);
 
-    const itemCount = Math.max(1, this.items.length);
-    this.atlasSize = Math.ceil(Math.sqrt(itemCount));
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const cellSize = 512;
+  const itemCount = Math.max(1, this.items.length);
+  this.atlasSize = Math.ceil(Math.sqrt(itemCount));
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const cellSize = 512;
 
-    canvas.width = this.atlasSize * cellSize;
-    canvas.height = this.atlasSize * cellSize;
+  canvas.width = this.atlasSize * cellSize;
+  canvas.height = this.atlasSize * cellSize;
 
-    Promise.all(
-      this.items.map(
-        item =>
-          new Promise(resolve => {
-            const img = new Image();
+  // Fill with a default background so you can see if textures fail
+  ctx.fillStyle = '#333';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  Promise.all(
+    this.items.map(
+      item =>
+        new Promise(resolve => {
+          const img = new Image();
+          // Try without crossOrigin first for local images
+          if (!item.image.startsWith('http')) {
+            // Local image, no CORS needed
+          } else {
             img.crossOrigin = 'anonymous';
-            img.onload = () => resolve(img);
-            img.src = item.image;
-          })
-      )
-    ).then(images => {
+          }
+          
+          img.onload = () => {
+            console.log('✓ Loaded:', item.image);
+            resolve(img);
+          };
+          img.onerror = (e) => {
+            console.error('✗ Failed to load:', item.image, e);
+            // Create a fallback canvas
+            const fallback = document.createElement('canvas');
+            fallback.width = fallback.height = cellSize;
+            const fallbackCtx = fallback.getContext('2d');
+            fallbackCtx.fillStyle = '#666';
+            fallbackCtx.fillRect(0, 0, cellSize, cellSize);
+            fallbackCtx.fillStyle = '#fff';
+            fallbackCtx.font = '40px Arial';
+            fallbackCtx.textAlign = 'center';
+            fallbackCtx.fillText('?', cellSize/2, cellSize/2);
+            resolve(fallback);
+          };
+          img.src = item.image;
+        })
+    )
+  ).then(images => {
+    // Rest of the code....then(images => {
       images.forEach((img, i) => {
         const x = (i % this.atlasSize) * cellSize;
         const y = Math.floor(i / this.atlasSize) * cellSize;

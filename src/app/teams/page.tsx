@@ -144,7 +144,7 @@ export default function TeamPage() {
   const menuItems: MenuItem[] = useMemo(
     () =>
       teamMembers.map((m) => ({
-        image: m.imageUrl || "/team/placeholder.png",
+        image: m.imageUrl ,
         link: m.linkedinLink || m.githubLink || "#",
         title: m.name || "Member",
         description: m.role || "Team Member",
