@@ -31,8 +31,6 @@ const ANIMATIONS = {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showDropdownResources, setShowDropdownResources] = useState(false);
-  const [showDropdownProjects, setShowDropdownProjects] = useState(false);
-  const [showDropdownAchievements, setShowDropdownAchievements] = useState(false);
   const [showDropDownTeams, setshowDropDownTeams] = useState(false);
 
   // ✅ Fixed keyboard listener for JSX
@@ -64,9 +62,7 @@ export default function Navbar() {
   const mainLinks = [
     "Home",
     "Projects",
-    
     "Events",
-    
     "Team",
     "Achievements",
     "Resources",
@@ -141,86 +137,8 @@ export default function Navbar() {
                   variants={ANIMATIONS.menuContainer}
                 >
                   {mainLinks.map((item) => {
-                    // ✅ Mobile Achievements Dropdown
-                    if (item === "Achievements") {
-                      return (
-                        <motion.div
-                          key="achievements"
-                          variants={ANIMATIONS.menuItem}
-                          className="flex flex-col items-start w-full"
-                        >
-                          <motion.span
-                            className="text-xl text-white font-semibold mb-2"
-                            variants={ANIMATIONS.menuItem}
-                          >
-                            Achievements
-                          </motion.span>
-
-                          <motion.div
-                            className="flex flex-col items-start gap-2 border-l-2 border-blue-500 pl-4"
-                            variants={ANIMATIONS.menuItem}
-                          >
-                            <motion.a
-                              href="/form"
-                              className="text-white text-base hover:text-blue-300"
-                              variants={ANIMATIONS.menuItem}
-                              onClick={() => setIsOpen(false)}
-                            >
-                              Upload Achievements
-                            </motion.a>
-                            <motion.a
-                              href="/achievements"
-                              className="text-white text-base hover:text-blue-300"
-                              variants={ANIMATIONS.menuItem}
-                              onClick={() => setIsOpen(false)}
-                            >
-                              View Achievements
-                            </motion.a>
-                          </motion.div>
-                        </motion.div>
-                      );
-                    }
-
-                    // ✅ Mobile Projects Dropdown
-                    if (item === "Projects") {
-                      return (
-                        <motion.div
-                          key="projects"
-                          variants={ANIMATIONS.menuItem}
-                          className="flex flex-col items-start w-full"
-                        >
-                          <motion.span
-                            className="text-xl text-white font-semibold mb-2"
-                            variants={ANIMATIONS.menuItem}
-                          >
-                            Projects
-                          </motion.span>
-
-                          <motion.div
-                            className="flex flex-col items-start gap-2 border-l-2 border-blue-500 pl-4"
-                            variants={ANIMATIONS.menuItem}
-                          >
-                            <motion.a
-                              href="/upload"
-                              className="text-white text-base hover:text-blue-300"
-                              variants={ANIMATIONS.menuItem}
-                              onClick={() => setIsOpen(false)}
-                            >
-                              Upload Projects
-                            </motion.a>
-                            <motion.a
-                              href="/projects"
-                              className="text-white text-base hover:text-blue-300"
-                              variants={ANIMATIONS.menuItem}
-                              onClick={() => setIsOpen(false)}
-                            >
-                              View Projects
-                            </motion.a>
-                          </motion.div>
-                        </motion.div>
-                      );
-                    }
-                     if (item === "Team") {
+                    // ✅ Mobile Team Dropdown
+                    if (item === "Team") {
                       return (
                         <motion.div
                           key="team"
@@ -244,7 +162,7 @@ export default function Navbar() {
                               variants={ANIMATIONS.menuItem}
                               onClick={() => setIsOpen(false)}
                             >
-                              Excecutive Body
+                              Executive Body
                             </motion.a>
                             <motion.a
                               href="/teams"
@@ -299,19 +217,21 @@ export default function Navbar() {
                       );
                     }
 
-                    if (item === "Team") {
+                    // ✅ Direct links for Projects and Achievements
+                    if (item === "Projects" || item === "Achievements") {
                       return (
                         <motion.a
-                          key="team"
-                          href="/team"
+                          key={item}
+                          href={`/${item.toLowerCase()}`}
                           variants={ANIMATIONS.menuItem}
                           className="text-xl text-white hover:text-blue-300 transition-colors py-2 rounded-lg hover:bg-white/5 w-full text-left"
                           onClick={() => setIsOpen(false)}
                         >
-                          Team
+                          {item}
                         </motion.a>
                       );
                     }
+
                     return (
                       <motion.a
                         key={item}
@@ -404,96 +324,8 @@ export default function Navbar() {
                   variants={ANIMATIONS.menuContainer}
                 >
                   {mainLinks.map((item) => {
-                    // ✅ Desktop Achievements Dropdown
-                    if (item === "Achievements") {
-                      return (
-                        <div
-                          key="achievements"
-                          className="relative group"
-                          onMouseEnter={() => setshowDropdownAchievements(true)}
-                          onMouseLeave={() => setshowDropdownAchievements(false)}
-                        >
-                          <motion.span
-                            className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5 cursor-pointer select-none"
-                            variants={ANIMATIONS.menuItem}
-                          >
-                            Achievements ▾
-                          </motion.span>
-
-                          <AnimatePresence>
-                            {showDropdownAchievements && (
-                              <motion.div
-                                className="absolute top-full left-0 mt-2 flex flex-col bg-white/10 border border-white/20 rounded-lg shadow-lg"
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                              >
-                                <a
-                                  href="/form"
-                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  Upload Achievements
-                                </a>
-                                <a
-                                  href="/achievements"
-                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  View Achievements
-                                </a>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      );
-                    }
-
-                    // ✅ Desktop Projects Dropdown
-                    if (item === "Projects") {
-                      return (
-                        <div
-                          key="projects"
-                          className="relative group"
-                          onMouseEnter={() => setShowDropdownProjects(true)}
-                          onMouseLeave={() => setShowDropdownProjects(false)}
-                        >
-                          <motion.span
-                            className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5 cursor-pointer select-none"
-                            variants={ANIMATIONS.menuItem}
-                          >
-                            Projects ▾
-                          </motion.span>
-
-                          <AnimatePresence>
-                            {showDropdownProjects && (
-                              <motion.div
-                                className="absolute top-full left-0 mt-2 flex flex-col bg-white/10 border border-white/20 rounded-lg shadow-lg"
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                              >
-                                <a
-                                  href="/upload"
-                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  Upload Projects
-                                </a>
-                                <a
-                                  href="/projects"
-                                  className="px-4 py-2 text-white hover:bg-blue-500/20"
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  View Projects
-                                </a>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      );
-                    }
-                     if (item === "Team") {
+                    // ✅ Desktop Team Dropdown
+                    if (item === "Team") {
                       return (
                         <div
                           key="team"
@@ -579,6 +411,21 @@ export default function Navbar() {
                             )}
                           </AnimatePresence>
                         </div>
+                      );
+                    }
+
+                    // ✅ Direct links for Projects and Achievements
+                    if (item === "Projects" || item === "Achievements") {
+                      return (
+                        <motion.a
+                          key={item}
+                          href={`/${item.toLowerCase()}`}
+                          variants={ANIMATIONS.menuItem}
+                          className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {item}
+                        </motion.a>
                       );
                     }
 
