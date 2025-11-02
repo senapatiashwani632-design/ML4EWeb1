@@ -6,8 +6,9 @@ const connectToTeamDB = async () => {
 
   try {
     await mongoose.connect(process.env.MongoURL!, {
-      dbName: "TeamDB", 
+      dbName: "teamDB", 
     });
+    console.log("Db name is:-", mongoose.connection.db!.databaseName);
     console.log(" Connected to Team MongoDB");
   } catch (error) {
     console.error(" MongoDB Team connection error:", error);

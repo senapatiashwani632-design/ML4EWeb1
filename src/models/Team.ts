@@ -11,5 +11,5 @@ const ProjectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.TeamDB ||
-  mongoose.model("TeamDB", ProjectSchema);
+export default mongoose.models.teamDB ||
+  mongoose.model("teamDB", ProjectSchema);

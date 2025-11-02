@@ -1,5 +1,5 @@
 import connectToTeamDB from "../../../lib/teamDB";
-import TeamDB from "../../../models/Team";
+import teamDB from "../../../models/Team";
 import cloudinary, { uploadToCloudinary } from "../../../lib/cloudinary"; 
 import { NextRequest } from "next/server";
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       imageUrl = uploadRes.secure_url;
     }
 
-    const newTeamMember = new TeamDB({
+    const newTeamMember = new teamDB({
       name,
       role,
       githubLink,
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   try {
     await connectToTeamDB();
-    const teamMembers = await TeamDB.find({}).sort({ createdAt: -1 });
+    const teamMembers = await teamDB.find({}).sort({ createdAt: -1 });
     return new Response(JSON.stringify(teamMembers), { status: 200 });
   } catch (error: unknown) {
     console.error(" Error fetching team members:", error);
