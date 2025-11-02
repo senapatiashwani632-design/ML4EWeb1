@@ -4,6 +4,9 @@ import React from "react";
 import { FaLinkedin, FaEnvelope } from "react-icons/fa";
 import ProfileCard from "@/app/components/ProfileCard/ProfileCard";
 import TextType from "@/app/components/TextType/TextType"; // ✅ Typing effect component
+import NeuralBackground from "@/app/components/NeuralBackground";
+
+
 
 const Glow = ({ className = "" }) => (
   <div
@@ -74,6 +77,7 @@ export default function TeamPage() {
       "
     >
       <Glow />
+      <NeuralBackground/>
 
       {/* ⚡ Neon Typing Heading */}
       <div className="relative text-center pt-12 pb-8">

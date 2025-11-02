@@ -7,10 +7,10 @@ export async function POST(req) {
     await connectToAchievementsDB(); // ✅ connect to DB
 
     const formData = await req.formData();
-
-    const title = formData.get("title");
-    const github = formData.get("github");
-    const deployed = formData.get("deployed");        // ✅ new
+    console.log("📥 Received form data for new achievement.", formData);
+    const title = formData.get("achievementName");
+    const github = formData.get("githubLink");
+    const deployed = formData.get("deployedLink");        // ✅ new
     const dateOfEvent = formData.get("dateOfEvent");  // ✅ new
     const membersRaw = formData.get("members");
     const certificate = formData.get("certificate");
