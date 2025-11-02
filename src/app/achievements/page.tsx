@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { FaGithub, FaLinkedin, FaExternalLinkAlt, FaStar, FaRocket, FaAward } from "react-icons/fa";
 import NeuralBackground from "../components/NeuralBackground";
+import Navbar from "../components/Navbar";
 
 function TypingText({ text, speed = 30, onComplete }: { text: string; speed?: number; onComplete?: () => void }) {
   const [displayedText, setDisplayedText] = useState("");
@@ -152,6 +153,8 @@ export default function AchievementsPage() {
   const combinedAchievements = [...achievements];
 
   return (
+    <>
+    <Navbar />
     <main className="relative min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-black via-blue-950 to-black text-white font-[Orbitron,Roboto,sans-serif]">
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Roboto:wght@300;400;500;700&display=swap');
@@ -163,7 +166,7 @@ export default function AchievementsPage() {
         <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-[3px] bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full" />
       </h1>
       <NeuralBackground/>
-      
+          
 
       <InfiniteCarousel />
 
@@ -186,6 +189,7 @@ export default function AchievementsPage() {
         )}
       </section>
     </main>
+    </>
   );
 }
 

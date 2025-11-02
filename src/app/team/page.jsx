@@ -5,6 +5,7 @@ import { FaLinkedin, FaEnvelope } from "react-icons/fa";
 import ProfileCard from "@/app/components/ProfileCard/ProfileCard";
 import TextType from "@/app/components/TextType/TextType"; // ✅ Typing effect component
 import NeuralBackground from "@/app/components/NeuralBackground";
+import Navbar from "@/app/components/Navbar";
 
 
 
@@ -70,6 +71,8 @@ const members = [
 
 export default function TeamPage() {
   return (
+    <>
+    <Navbar />
     <main
       className="
         relative z-30 w-full overflow-hidden border-t border-cyan-500/20
@@ -82,7 +85,7 @@ export default function TeamPage() {
       {/* ⚡ Neon Typing Heading */}
       <div className="relative text-center pt-12 pb-8">
         <h1
-          className="text-4xl md:text-5xl font-extrabold tracking-wide text-cyan-200 drop-shadow-[0_0_18px_rgba(0,255,255,.45)]">
+          className="text-4xl md:text-5xl font-extrabold tracking-wide text-cyan-200 drop-shadow-[0_0_18px_rgba(0,255,255,.45)] font-[Orbitron]">
           <TextType
             text={["Executive Body", "Team ML4E"]}
             className="text-cyan-200 drop-shadow-[0_0_18px_rgba(0,255,255,.45)]"
@@ -92,6 +95,8 @@ export default function TeamPage() {
             cursorCharacter="|"
           />
         </h1>
+      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-24 h-[3px] bg-gradient-to-r from-blue-500 to-cyan-200 rounded-full" />
+
       </div>
 
       {/* Team Member Grid */}
@@ -146,5 +151,6 @@ export default function TeamPage() {
         ))}
       </div>
     </main>
+    </>
   );
 }

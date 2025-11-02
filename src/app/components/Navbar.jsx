@@ -72,7 +72,7 @@ export default function Navbar() {
   return (
     <>
       {/* ---------------- MOBILE NAV ---------------- */}
-      <nav className="md:hidden fixed top-0 left-0 w-full bg-transparent z-[60]">
+      <nav className="md:hidden fixed top-0 left-0 w-full bg-transparent z-[60] font-[Orbitron]">
         <div className="flex justify-between items-center h-16 px-4">
           {/* Logo */}
             <div className="w-12 h-12 rounded-full overflow-hidden  ">
@@ -252,7 +252,7 @@ export default function Navbar() {
       </nav>
 
       {/* ---------------- DESKTOP NAV ---------------- */}
-      <div className="hidden md:block">
+      <div className="hidden md:block font-[Orbitron]">
         <div
           className={`fixed top-0 left-0 h-screen w-20 flex flex-col justify-between items-center py-6 z-50 
           ${

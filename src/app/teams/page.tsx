@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Navbar from "../components/Navbar";
 
 /* ================== Types ================== */
 interface TeamMember {
@@ -40,36 +41,36 @@ const InfiniteMenu = React.lazy(
 >;
 
 /* ================== Demo / Fallback ================== */
-const DEMO_TEAM: TeamMember[] = [
-  {
-    name: "Kunal Kushwaha",
-    role: "President",
-    imageUrl: "/team/president.png",
-    githubLink: "https://github.com/",
-    linkedinLink: "https://linkedin.com/",
-  },
-  {
-    name: "Rishi Das",
-    role: "Vice President",
-    imageUrl: "/team/vp.png",
-    githubLink: "https://github.com/",
-    linkedinLink: "https://linkedin.com/",
-  },
-  {
-    name: "Bibhu",
-    role: "Secretary",
-    imageUrl: "/team/secretary.png",
-    githubLink: "https://github.com/",
-    linkedinLink: "https://linkedin.com/",
-  },
-  {
-    name: "Arko Pravo Dey",
-    role: "Treasurer",
-    imageUrl: "/team/treasurer.png",
-    githubLink: "https://github.com/",
-    linkedinLink: "https://linkedin.com/",
-  },
-];
+// const DEMO_TEAM: TeamMember[] = [
+//   {
+//     name: "Kunal Kushwaha",
+//     role: "President",
+//     imageUrl: "/team/president.png",
+//     githubLink: "https://github.com/",
+//     linkedinLink: "https://linkedin.com/",
+//   },
+//   {
+//     name: "Rishi Das",
+//     role: "Vice President",
+//     imageUrl: "/team/vp.png",
+//     githubLink: "https://github.com/",
+//     linkedinLink: "https://linkedin.com/",
+//   },
+//   {
+//     name: "Bibhu",
+//     role: "Secretary",
+//     imageUrl: "/team/secretary.png",
+//     githubLink: "https://github.com/",
+//     linkedinLink: "https://linkedin.com/",
+//   },
+//   {
+//     name: "Arko Pravo Dey",
+//     role: "Treasurer",
+//     imageUrl: "/team/treasurer.png",
+//     githubLink: "https://github.com/",
+//     linkedinLink: "https://linkedin.com/",
+//   },
+// ];
 
 /* ================== Loading Screen ================== */
 function LoadingScreen() {
@@ -124,12 +125,12 @@ export default function TeamPage() {
           setTeamMembers(data);
           setUsingFallback(false);
         } else {
-          setTeamMembers(DEMO_TEAM);
+          //setTeamMembers(DEMO_TEAM);
           setUsingFallback(true);
         }
       } catch {
         if (!alive) return;
-        setTeamMembers(DEMO_TEAM);
+        //setTeamMembers(DEMO_TEAM);
         setUsingFallback(true);
       } finally {
         if (alive) setLoading(false);
@@ -169,8 +170,11 @@ export default function TeamPage() {
   if (loading) return <LoadingScreen />;
 
   return (
+    <>
+    <Navbar />
     <main className="min-h-screen w-full bg-[#0b1117] text-slate-200">
       {/* Top: Infinite Menu */}
+     
       <section className="relative h-[62vh] w-full overflow-hidden">
         <React.Suspense fallback={<LoadingScreen />}>
           <InfiniteMenu
@@ -309,5 +313,6 @@ export default function TeamPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

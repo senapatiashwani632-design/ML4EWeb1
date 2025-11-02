@@ -10,6 +10,8 @@ import NeuralBackground from "@/app/components/NeuralBackground";
 import { TypeAnimation } from "react-type-animation";
 import { motion } from "framer-motion"; 
 import DescriptionModal from "@/app/components/DescriptionModal";
+import Navbar from "../components/Navbar";
+
 
 // === FONT CONFIGURATIONS ===
 const orbitron = Orbitron({
@@ -134,15 +136,19 @@ export default function ViewProjectsPage() {
 
   // === MAIN RENDER ===
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-b from-[#050816] via-[#0A0F1E] to-[#0F172A] py-16 px-4 sm:px-8">
+    <main className="relative min-h-screen w-full bg-gradient-to-b from-[#050816] via-[#0A0F1E] to-[#0F172A] py-16 px-4 sm:px-8">
+       <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Roboto:wght@300;400;500;700&display=swap');
+      `}</style>
       <NeuralBackground />
-
+      <Navbar />
       <div className="relative z-10">
-        <h1
-          className={`text-4xl sm:text-5xl font-bold text-center text-cyan-400 mb-12 ${orbitron.className}`}
-        >
+      <h1 className="text-4xl md:text-6xl font-bold mt-5 text-center tracking-widest relative font-[Orbitron]">
+        <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-600 drop-shadow-[0_0_25px_rgba(0,200,255,0.6)]">
           PROJECTS
-        </h1>
+        </span>
+        <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-[3px] bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full" />
+      </h1>
 
         {/* === PROJECTS GRID === */}
         <div className="flex flex-col gap-y-16 lg:gap-y-24 max-w-7xl mx-auto">
@@ -296,6 +302,6 @@ export default function ViewProjectsPage() {
           onClose={() => setSelectedProject(null)}
         />
       )}
-    </div>
+    </main>
   );
 }
