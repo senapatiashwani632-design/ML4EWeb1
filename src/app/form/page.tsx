@@ -82,7 +82,7 @@ const AchievementForm: React.FC = () => {
 
         setTimeout(() => {
           setShowModal(false);
-          router.push("/projects");
+          router.push("/achievements");
         }, 2000);
       } else {
         setMessage("Failed to submit. Try again.");

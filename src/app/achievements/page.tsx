@@ -163,6 +163,7 @@ export default function AchievementsPage() {
         <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-[3px] bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full" />
       </h1>
       <NeuralBackground/>
+      
 
       <InfiniteCarousel />
 
