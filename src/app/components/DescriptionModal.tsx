@@ -1,79 +1,114 @@
+// components/DescriptionModal.tsx
 "use client";
 
-import React from "react";
-import { Orbitron, JetBrains_Mono } from "next/font/google";
+import { motion } from "framer-motion";
+import { FiX, FiExternalLink, FiGithub } from "react-icons/fi";
 
-interface Project {
+type Project = {
   _id: string;
   name: string;
+  imageUrl?: string;
+  techStack?: string;
   description?: string;
-}
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+  deployedLink?: string;
+  githubLink?: string;
+};
 
 interface DescriptionModalProps {
   project: Project;
   onClose: () => void;
 }
 
-const DescriptionModal: React.FC<DescriptionModalProps> = ({
-  project,
-  onClose,
-}) => {
-  if (!project) return null;
-
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  return (
-    <div
-      id={`modal-${project._id}`}
-      tabIndex={-1}
-      aria-hidden="true"
-      onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
-    >
-      <div className="relative w-full max-w-2xl max-h-[90vh]">
-        <div className="relative bg-gradient-to-br from-[#0A0F1E] via-[#0F172A] to-[#1E293B] rounded-lg shadow-xl border border-cyan-500/30 overflow-hidden">
-          
-          <div className="flex items-center gap-2 p-3 bg-slate-900/50 border-b border-slate-700">
-            <span className="block w-3 h-3 rounded-full bg-red-500"></span>
-            <span className="block w-3 h-3 rounded-full bg-yellow-500"></span>
-            <span className="block w-3 h-3 rounded-full bg-green-500"></span>
-          </div>
-
-   
-          <div className="relative flex items-center p-4 md:p-5 border-b border-slate-700">
-            <h3
-              className={`text-xl font-semibold text-cyan-400 text-center w-full ${orbitron.className}`}
-            >
-              {project.name}
-            </h3>
-      
-              
-          </div>
-
-          <div className="p-4 md:p-5 space-y-4 max-h-[60vh] overflow-y-auto pr-5">
-            <p
-              className={`text-base leading-relaxed text-gray-300 whitespace-pre-line ${jetbrainsMono.className}`}
-            >
-              {project.description}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+const parseTechStack = (techStack?: string): string[] => {
+  if (!techStack) return [];
+  return techStack.split(/[,|]/).map(tech => tech.trim()).filter(Boolean);
 };
 
-export default DescriptionModal;
+export default function DescriptionModal({ project, onClose }: DescriptionModalProps) {
+  const techStackArray = parseTechStack(project.techStack);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-700 max-w-2xl w-full max-h-[90vh] overflow-hidden"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+          <h2 className="text-2xl font-bold text-white">{project.name}</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-white"
+          >
+            <FiX size={24} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          {/* Description Section */}
+          {project.description && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-cyan-400 mb-3">Description</h3>
+              <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                {project.description}
+              </p>
+            </div>
+          )}
+
+          {/* Tech Stack Section */}
+          {techStackArray.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-cyan-400 mb-3">Tech Stack</h3>
+              <div className="flex flex-wrap gap-2">
+                {techStackArray.map((tech, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-2 bg-slate-800/60 rounded-lg text-cyan-200 border border-cyan-500/30"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Links */}
+          <div className="flex gap-4 pt-4 border-t border-slate-700">
+            {project.deployedLink && (
+              <a
+                href={project.deployedLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg transition-colors text-white"
+              >
+                <FiExternalLink />
+                Live Demo
+              </a>
+            )}
+            {project.githubLink && (
+              <a
+                href={project.githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-white"
+              >
+                <FiGithub />
+                GitHub
+              </a>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
