@@ -204,14 +204,14 @@ export default function Navbar() {
                             >
                               Online Resources
                             </motion.a>
-                            <motion.a
+                            {/* <motion.a
                               href="/books"
                               className="text-white text-base hover:text-blue-300"
                               variants={ANIMATIONS.menuItem}
                               onClick={() => setIsOpen(false)}
                             >
                               Books
-                            </motion.a>
+                            </motion.a> */}
                           </motion.div>
                         </motion.div>
                       );
@@ -223,6 +223,19 @@ export default function Navbar() {
                         <motion.a
                           key={item}
                           href={`/${item.toLowerCase()}`}
+                          variants={ANIMATIONS.menuItem}
+                          className="text-xl text-white hover:text-blue-300 transition-colors py-2 rounded-lg hover:bg-white/5 w-full text-left"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {item}
+                        </motion.a>
+                      );
+                    }
+                     if (item === "Home") {
+                      return (
+                        <motion.a
+                          key={item}
+                          href={`/`}
                           variants={ANIMATIONS.menuItem}
                           className="text-xl text-white hover:text-blue-300 transition-colors py-2 rounded-lg hover:bg-white/5 w-full text-left"
                           onClick={() => setIsOpen(false)}
@@ -400,13 +413,13 @@ export default function Navbar() {
                                 >
                                   Online Resources
                                 </a>
-                                <a
+                                {/* <a
                                   href="/books"
                                   className="px-4 py-2 text-white hover:bg-blue-500/20"
                                   onClick={() => setIsOpen(false)}
                                 >
                                   Books
-                                </a>
+                                </a> */}
                               </motion.div>
                             )}
                           </AnimatePresence>
@@ -420,6 +433,19 @@ export default function Navbar() {
                         <motion.a
                           key={item}
                           href={`/${item.toLowerCase()}`}
+                          variants={ANIMATIONS.menuItem}
+                          className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {item}
+                        </motion.a>
+                      );
+                    }
+                      if (item === "Home") {
+                      return (
+                        <motion.a
+                          key={item}
+                          href={`/`}
                           variants={ANIMATIONS.menuItem}
                           className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5"
                           onClick={() => setIsOpen(false)}
