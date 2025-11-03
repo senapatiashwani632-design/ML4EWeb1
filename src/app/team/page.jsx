@@ -22,8 +22,8 @@ const members = [
     title: "President",
     handle: "kunal",
     avatarUrl: "/team/president.png",
-    linkedin: "https://linkedin.com/in/kunal",
-    gmail: "mailto:kunal@nitrkl.ac.in",
+    linkedin: "https://www.linkedin.com/in/kunalkushwahatg?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    gmail: "mailto:kunalkushwahatg@gmail.com",
     zoom: 1,              // 🔹 Normal size
     disableAura: true,   // 🔹 Keep glow animation
   },
@@ -32,8 +32,8 @@ const members = [
     title: "Vice President",
     handle: "rishi",
     avatarUrl: "/team/vp.png",
-    linkedin: "https://linkedin.com/in/rishi",
-    gmail: "mailto:rishi@nitrkl.ac.in",
+    linkedin: "https://www.linkedin.com/in/rishi2003das/",
+    gmail: "mailto:rishikakalidas@gmail.com",
     zoom: 1,
     disableAura: true,
   },
@@ -42,8 +42,8 @@ const members = [
     title: "Secretary",
     handle: "bibhu",
     avatarUrl: "/team/secretary.png",
-    linkedin: "https://linkedin.com/in/bibhu",
-    gmail: "mailto:bibhu@nitrkl.ac.in",
+    linkedin: "https://www.linkedin.com/in/bibhu-prasad-mohapatra-26bab92b4/",
+    gmail: "mailto:bibhuprasadmohapatra05@gmail.com",
     zoom: 1,
     disableAura: true,
   },
@@ -52,8 +52,8 @@ const members = [
     title: "Treasurer",
     handle: "arko",
     avatarUrl: "/team/treasurer.png",
-    linkedin: "https://linkedin.com/in/arko",
-    gmail: "mailto:arko@nitrkl.ac.in",
+    linkedin: "https://www.linkedin.com/in/arkapravo-dey-0299532a2/",
+    gmail: "mailto:arka2005dey@gmail.com",
     zoom: 1.5,           // 🔹 Slightly larger photo
     disableAura: true,    // 🔹 Turn off rainbow animation
   },
@@ -62,11 +62,21 @@ const members = [
     title: "ML Lead",
     handle: "risabh",
     avatarUrl: "/team/mllead.png",
-    linkedin: "https://linkedin.com/in/risabh",
-    gmail: "mailto:risabh@nitrkl.ac.in",
+    linkedin: "https://www.linkedin.com/in/rishabh-anand-8b79bb272",
+    gmail: "mailto:rishabh.msa@gmail.com",
     zoom: 1.5,
     disableAura: true,
   },
+  //  {
+  //   name: "Ashwani Senapati",
+  //   title: "Web Lead",
+  //   handle: "ashwani",
+  //   avatarUrl: "/team/weblead.png",
+  //   linkedin: "https://www.linkedin.com/in/ashwani-senapati-ba294827a/",
+  //   gmail: "mailto:senapatiashwani47@gmail.com",
+  //   zoom: 1.5,
+  //   disableAura: true,
+  // },
 ];
 
 export default function TeamPage() {
@@ -123,7 +133,7 @@ export default function TeamPage() {
               showUserInfo={false}
               showBehindGradient={false}
               zoom={m.zoom}               // ✅ Apply per-member zoom
-              disableAura={m.disableAura} // ✅ Apply per-member aura toggle
+              d//isableAura={m.disableAura} // ✅ Apply per-member aura toggle
             />
 
             {/* Social Links */}
