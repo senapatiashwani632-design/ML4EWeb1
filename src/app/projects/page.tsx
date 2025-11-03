@@ -248,14 +248,14 @@ export default function ViewProjectsPage() {
                     className="w-full text-center"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
+                    transition={{ duration: 0.2, delay: 0.5 }}
                     viewport={{ once: true }}
                   >
                     <TypeAnimation
                       sequence={[project.name || "Untitled Project"]}
                       wrapper="h2"
-                      speed={50}
-                      className={`text-3xl font-bold text-white ${orbitron.className}`}
+                      speed={90}
+                      className={`text-3xl font-bold text-white font-[Orbitron] `}
                       cursor={false}
                     />
                   </motion.div>
