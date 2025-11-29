@@ -381,7 +381,7 @@ export default function Navbar() {
                         </div>
                       );
                     }
-
+                    
                     // ✅ Desktop Resources Dropdown
                     if (item === "Resources") {
                       return (
@@ -458,7 +458,7 @@ export default function Navbar() {
                     return (
                       <motion.a
                         key={item}
-                        href={`#${item.toLowerCase()}`}
+                        href={`${item.toLowerCase()==="events"?`/${item.toLowerCase()}`:`#${item.toLowerCase()}`}`}
                         variants={ANIMATIONS.menuItem}
                         className="text-2xl text-white hover:text-blue-300 transition-colors py-2 px-6 rounded-lg hover:bg-white/5"
                         onClick={() => setIsOpen(false)}
