@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { FaGithub, FaLinkedin, FaExternalLinkAlt, FaStar, FaRocket, FaAward } from "react-icons/fa";
 import NeuralBackground from "../components/NeuralBackground";
@@ -130,9 +130,40 @@ function InfiniteCarousel() {
   );
 }
 
+function LoadingScreen() {
+  return (
+    <div className="fixed inset-0 z-50 grid min-h-screen place-items-center overflow-hidden bg-[#0b1117] text-slate-200">
+      <div className="pointer-events-none absolute inset-0 -z-10 blur-2xl opacity-70 [background:radial-gradient(50%_50%_at_20%_0%,rgba(34,211,238,.16),transparent_60%),radial-gradient(45%_45%_at_85%_15%,rgba(20,184,166,.14),transparent_60%),radial-gradient(40%_40%_at_50%_120%,rgba(56,189,248,.12),transparent_60%)]" />
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative h-20 w-20">
+          <div className="absolute inset-0 animate-[spin_1.2s_linear_infinite] rounded-full border-4 border-cyan-300/30 border-t-cyan-300 shadow-[0_0_24px_rgba(34,211,238,.35)]" />
+          <div className="absolute inset-2 grid place-items-center rounded-full bg-black/40 backdrop-blur-xl">
+            <Image
+              src="/ml4e.svg"
+              alt="ML4E"
+              width={44}
+              height={44}
+              priority
+              className="opacity-95 drop-shadow-[0_0_12px_rgba(34,211,238,.45)] animate-[pulse_1.8s_ease-in-out_infinite]"
+            />
+          </div>
+        </div>
+        <div className="text-center">
+          <h2 className="text-xl font-semibold tracking-wide text-cyan-200 drop-shadow-[0_0_16px_rgba(0,255,255,.35)]">
+            Loading Achievements
+          </h2>
+          <p className="mt-1 text-sm text-slate-400">
+            Fetching the latest achievements…
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AchievementsPage() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchAchievements() {
@@ -143,6 +174,8 @@ export default function AchievementsPage() {
         setAchievements(data);
       } catch (error) {
         console.error("Error fetching achievements:", error);
+        // Fallback to local achievements on error
+        setAchievements([]);
       } finally {
         setLoading(false);
       }
@@ -151,6 +184,11 @@ export default function AchievementsPage() {
   }, []);
 
   const combinedAchievements = [...achievements];
+
+  // Show loading screen until data is fetched
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
@@ -167,12 +205,13 @@ export default function AchievementsPage() {
       </h1>
       <NeuralBackground/>
           
-
       <InfiniteCarousel />
 
       <section className="mt-16 mb-16 flex flex-col gap-12 px-4 md:px-12 w-full max-w-7xl">
-        {loading ? (
-          <p className="text-gray-400 text-center">Loading achievements...</p>
+        {combinedAchievements.length === 0 ? (
+          <div className="text-center text-gray-400 py-20">
+            <p className="text-xl">No achievements found.</p>
+          </div>
         ) : (
           combinedAchievements.map((achievement, idx) => {
             const isImageLeft = idx % 2 === 0;
@@ -234,16 +273,6 @@ function AchievementCard({ achievement, isImageLeft, index }: { achievement: Ach
                 showContent ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
               }`}
             >
-              {/* Styled Speech Bubble Tail - Pointing Left */}
-              {/* <div className="absolute left-0 top-1/2 -translate-x-[99%] -translate-y-1/2 z-20">
-                <div className="relative">
-                  {/* Main triangular tail with same background as card */}
-                  {/* <div className="w-0 h-0 border-t-[25px] border-t-transparent border-b-[25px] border-b-transparent border-r-[35px] border-r-slate-900/90 backdrop-blur-xl"></div> */}
-                  {/* Gradient overlay to match card gradient */}
-                  {/* <div className="absolute top-0 left-0 w-0 h-0 border-t-[25px] border-t-transparent border-b-[25px] border-b-transparent border-r-[35px] border-r-cyan-500/20 -translate-x-0.5"></div> */}
-                {/* </div> */}
-              {/* </div> */}
-
               {/* Modern Card Design with enhanced glassmorphism */}
               <div className="relative bg-gradient-to-br from-slate-900/80 to-blue-950/80 rounded-3xl p-8 text-white shadow-2xl border border-slate-700/50 backdrop-blur-2xl">
                 {/* Enhanced Glow Effect */}
@@ -329,121 +358,111 @@ function AchievementCard({ achievement, isImageLeft, index }: { achievement: Ach
             </div>
           </>
         ) : (
-           <>
-  {/* Content Box Left - Overlapping with higher z-index */}
-  <div 
-    className={`w-[50%] relative transition-all duration-1000 delay-500 -mr-20 z-30 ${
-      showContent ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'
-    }`}
-  >
-    {/* Styled Speech Bubble Tail - Pointing Right */}
-    {/* <div className="absolute right-0 top-1/2 translate-x-[99%] -translate-y-1/2 z-40">
-      <div className="relative">
-        {/* Main triangular tail with same background as card */}
-        {/* <div className="w-0 h-0 border-t-[25px] border-t-transparent border-b-[25px] border-b-transparent border-l-[35px]  backdrop-blur-xl"></div> */}
-        {/* Gradient overlay to match card gradient */}
-        {/* <div className="absolute top-0 left-0 w-0 h-0 border-t-[25px] border-t-transparent border-b-[25px] border-b-transparent border-l-[35px] border-l-cyan-500/20 translate-x-0.5"></div> */}
-      {/* </div> */}
-    {/* </div> */} 
-
-    {/* Modern Card Design with enhanced glassmorphism */}
-    <div className="relative bg-gradient-to-br from-slate-900/80 to-blue-950/80 rounded-3xl p-8 text-white shadow-2xl border border-slate-700/50 backdrop-blur-2xl z-30">
-      {/* Enhanced Glow Effect */}
-      <div className="absolute inset-0 bg-gradient-to-l from-cyan-500/15 to-blue-500/15 rounded-3xl blur-2xl"></div>
-      
-      {/* Header with Icon */}
-      <div className="flex items-center gap-3 mb-6 relative z-10">
-        <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl shadow-lg">
-          <FaAward className="text-white text-sm" />
-        </div>
-        <div>
-          <p className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300 text-sm font-bold tracking-widest uppercase font-[Orbitron]">
-            {startTyping && <TypingText text="Featured Achievement" speed={20} />}
-          </p>
-          <div className="flex gap-1 mt-1">
-            {[1, 2, 3].map((star) => (
-              <FaStar key={star} className="text-cyan-400 text-xs" />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-blue-200 text-3xl font-bold mb-4 leading-tight font-[Orbitron] relative z-10">
-        {startTyping && <TypingText text={achievement.title} speed={25} />}
-      </h2>
-      
-      <p className="text-gray-300 text-base leading-relaxed mb-6 font-[Roboto] relative z-10">
-        {startTyping && <TypingText text={achievement.description || ""} speed={15} />}
-      </p>
-      
-      {/* Technologies */}
-      {achievement.technologies && showContent && (
-        <div className="flex flex-wrap gap-3 mb-6 relative z-10">
-          {achievement.technologies.map((tech, i) => (
-            <span
-              key={i}
-              className="px-4 py-2 bg-slate-800/40 backdrop-blur-sm border border-slate-600/50 rounded-xl text-sm text-cyan-100 font-[Roboto] font-medium hover:bg-slate-700/60 transition-all duration-300 hover:scale-105 hover:border-cyan-500/30"
+          <>
+            {/* Content Box Left - Overlapping with higher z-index */}
+            <div 
+              className={`w-[50%] relative transition-all duration-1000 delay-500 -mr-20 z-30 ${
+                showContent ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'
+              }`}
             >
-              {tech}
-            </span>
-          ))}
-        </div>
-      )}
+              {/* Modern Card Design with enhanced glassmorphism */}
+              <div className="relative bg-gradient-to-br from-slate-900/80 to-blue-950/80 rounded-3xl p-8 text-white shadow-2xl border border-slate-700/50 backdrop-blur-2xl z-30">
+                {/* Enhanced Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-l from-cyan-500/15 to-blue-500/15 rounded-3xl blur-2xl"></div>
+                
+                {/* Header with Icon */}
+                <div className="flex items-center gap-3 mb-6 relative z-10">
+                  <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl shadow-lg">
+                    <FaAward className="text-white text-sm" />
+                  </div>
+                  <div>
+                    <p className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300 text-sm font-bold tracking-widest uppercase font-[Orbitron]">
+                      {startTyping && <TypingText text="Featured Achievement" speed={20} />}
+                    </p>
+                    <div className="flex gap-1 mt-1">
+                      {[1, 2, 3].map((star) => (
+                        <FaStar key={star} className="text-cyan-400 text-xs" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-700/50 relative z-10">
-        <div className="flex items-center gap-4">
-          {achievement.members && achievement.members.map((member, i) => (
-            <a
-              key={i}
-              href={member.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-cyan-200 hover:text-white transition-all duration-300 hover:scale-105 group"
-            >
-              <div className="p-1.5 bg-slate-700/50 rounded-lg group-hover:bg-cyan-500/20 transition-colors">
-                <FaLinkedin size={14} />
+                {/* Content */}
+                <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-blue-200 text-3xl font-bold mb-4 leading-tight font-[Orbitron] relative z-10">
+                  {startTyping && <TypingText text={achievement.title} speed={25} />}
+                </h2>
+                
+                <p className="text-gray-300 text-base leading-relaxed mb-6 font-[Roboto] relative z-10">
+                  {startTyping && <TypingText text={achievement.description || ""} speed={15} />}
+                </p>
+                
+                {/* Technologies */}
+                {achievement.technologies && showContent && (
+                  <div className="flex flex-wrap gap-3 mb-6 relative z-10">
+                    {achievement.technologies.map((tech, i) => (
+                      <span
+                        key={i}
+                        className="px-4 py-2 bg-slate-800/40 backdrop-blur-sm border border-slate-600/50 rounded-xl text-sm text-cyan-100 font-[Roboto] font-medium hover:bg-slate-700/60 transition-all duration-300 hover:scale-105 hover:border-cyan-500/30"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-4 border-t border-slate-700/50 relative z-10">
+                  <div className="flex items-center gap-4">
+                    {achievement.members && achievement.members.map((member, i) => (
+                      <a
+                        key={i}
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-cyan-200 hover:text-white transition-all duration-300 hover:scale-105 group"
+                      >
+                        <div className="p-1.5 bg-slate-700/50 rounded-lg group-hover:bg-cyan-500/20 transition-colors">
+                          <FaLinkedin size={14} />
+                        </div>
+                        <span className="text-sm font-[Roboto]">{member.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                  
+                  {achievement.github && (
+                    <a
+                      href={achievement.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-cyan-200 hover:text-white transition-all duration-300 hover:scale-105 group"
+                    >
+                      <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg shadow-lg group-hover:shadow-cyan-500/25 transition-all">
+                        <FaExternalLinkAlt size={14} />
+                      </div>
+                    </a>
+                  )}
+                </div>
+
+                {/* Corner Accents */}
+                <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-transparent rounded-tl-3xl"></div>
+                <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-blue-500/20 to-transparent rounded-br-3xl"></div>
               </div>
-              <span className="text-sm font-[Roboto]">{member.name}</span>
-            </a>
-          ))}
-        </div>
-        
-        {achievement.github && (
-          <a
-            href={achievement.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-cyan-200 hover:text-white transition-all duration-300 hover:scale-105 group"
-          >
-            <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg shadow-lg group-hover:shadow-cyan-500/25 transition-all">
-              <FaExternalLinkAlt size={14} />
             </div>
-          </a>
-        )}
-      </div>
-
-      {/* Corner Accents */}
-      <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-transparent rounded-tl-3xl"></div>
-      <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-blue-500/20 to-transparent rounded-br-3xl"></div>
-    </div>
-  </div>
-  
-  {/* Image Right - Larger with LOWER z-index so card overlaps it */}
-  <div 
-    className={`w-[55%] relative h-[28rem] overflow-hidden rounded-2xl transition-all duration-1000 z-10 ${
-      isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
-    }`}
-  >
-    <img
-      src={achievement.img}
-      alt={achievement.title}
-      className="w-full h-full object-cover"
-    />
-    <div className="absolute inset-0 bg-gradient-to-l from-transparent to-blue-950/30"></div>
-  </div>
-</>
+            
+            {/* Image Right - Larger with LOWER z-index so card overlaps it */}
+            <div 
+              className={`w-[55%] relative h-[28rem] overflow-hidden rounded-2xl transition-all duration-1000 z-10 ${
+                isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
+              }`}
+            >
+              <img
+                src={achievement.img}
+                alt={achievement.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent to-blue-950/30"></div>
+            </div>
+          </>
         )}
       </div>
 
