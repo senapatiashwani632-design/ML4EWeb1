@@ -14,9 +14,10 @@ import mongoose from "mongoose";
 //   }
 // };
 const connectToAchievementsDB = async () => {
-  if (mongoose.connection.readyState >= 1) {
-    console.log("✅ Already connected to Achievements MongoDB");
-    return;
+    if (mongoose.connection.readyState >= 1) {
+    console.log("⚠️ Existing connection found. Closing it...");
+    await mongoose.connection.close();
+    console.log("✅ Previous connection closed");
   }
 
   try {
