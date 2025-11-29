@@ -17,5 +17,5 @@ const achievementSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.Achievement ||
-  mongoose.model("Achievement", achievementSchema);
+export default mongoose.models.achievements ||
+  mongoose.model("achievements", achievementSchema);
