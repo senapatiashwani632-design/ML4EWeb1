@@ -45,7 +45,7 @@ export default function Footer() {
               href="mailto:swaina@nitrkl.ac.in"
               className="mt-3 inline-flex items-center justify-center rounded-md bg-cyan-900/30 px-3 py-2 text-cyan-200 hover:bg-cyan-800/40 transition"
             >
-              ✉️ swaina@nitrkl.ac.in
+              ✉️ baigm@nitrkl.ac.in
             </a>
           </div>
 
