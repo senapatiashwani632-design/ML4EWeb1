@@ -182,7 +182,6 @@ export default function App() {
         {showHome && (
           <>
             <Home />
-            <Footer />
           </>
         )}
       </div>

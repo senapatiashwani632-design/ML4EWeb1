@@ -24,6 +24,7 @@ const connectToAchievementsDB = async () => {
     await mongoose.connect(process.env.MongoURL, {
       dbName: "achievementDB", 
     });
+    
     console.log("✅ Connected to Achievements MongoDB");
   } catch (error) {
     console.error("❌ MongoDB Achievements connection error:", error);

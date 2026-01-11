@@ -13,6 +13,7 @@ export default function Footer() {
 
   return (
     <footer
+    id="contact"
       className="
         relative z-30 w-full overflow-hidden
         bg-[#0b1117] text-slate-200 isolate flex flex-col items-center

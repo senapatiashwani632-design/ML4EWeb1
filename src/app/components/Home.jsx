@@ -241,11 +241,10 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Sphere, Line } from "@react-three/drei";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { motion } from "framer-motion";
-import { ReactTyped } from "react-typed";
 import Navbar from "./Navbar";
 
 const Glow = ({ className = "" }) => (
@@ -255,20 +254,24 @@ const Glow = ({ className = "" }) => (
   />
 );
 
-function AnimatedNeuralNode({ position, color, size = 0.08 }) {
+// Navbar placeholder
+
+
+function AnimatedNeuralNode({ position, color, size = 0.08, delay = 0 }) {
   const ref = useRef();
 
   useFrame((state) => {
     if (ref.current) {
-      // Subtle pulsing animation
-      ref.current.scale.x = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-      ref.current.scale.y = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-      ref.current.scale.z = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
+      // Subtle pulsing animation with individual delay
+      const time = state.clock.elapsedTime + delay;
+      ref.current.scale.x = 1 + Math.sin(time * 2) * 0.15;
+      ref.current.scale.y = 1 + Math.sin(time * 2) * 0.15;
+      ref.current.scale.z = 1 + Math.sin(time * 2) * 0.15;
     }
   });
 
   return (
-    <Sphere ref={ref} args={[size, 64, 64]} position={position}>
+    <Sphere ref={ref} args={[size, 32, 32]} position={position}>
       <meshStandardMaterial
         color={color}
         emissive={color}
@@ -278,55 +281,127 @@ function AnimatedNeuralNode({ position, color, size = 0.08 }) {
     </Sphere>
   );
 }
-
+// Add this component after the imports
+function ElectricCircuitBackground() {
+  return (
+    <group position={[0, 0, -10]}>
+      {/* Main circuit grid */}
+      <gridHelper 
+        args={[50, 100, '#00faff', '#00a8ff']} 
+        rotation={[0, 0, Math.PI / 4]}
+      />
+      
+      {/* Floating circuit lines */}
+      {Array.from({ length: 20 }).map((_, i) => {
+        const x = (Math.random() - 0.5) * 40;
+        const y = (Math.random() - 0.5) * 40;
+        const length = 3 + Math.random() * 5;
+        
+        return (
+          <Line
+            key={i}
+            points={[
+              [x, y, 0],
+              [x + length, y + (Math.random() - 0.5) * 2, 0]
+            ]}
+            color="#00faff"
+            lineWidth={0.5}
+            transparent
+            opacity={0.3 + Math.random() * 0.3}
+          />
+        );
+      })}
+      
+      {/* Circuit nodes */}
+      {Array.from({ length: 30 }).map((_, i) => (
+        <Sphere
+          key={`node-${i}`}
+          args={[0.05, 16, 16]}
+          position={[
+            (Math.random() - 0.5) * 40,
+            (Math.random() - 0.5) * 40,
+            0
+          ]}
+        >
+          <meshBasicMaterial color="#00faff" toneMapped={false} />
+        </Sphere>
+      ))}
+    </group>
+  );
+}
 function NeuralStructure({
   position = [0, 0, 0],
   color = "#00faff",
-  nodeCount = 18, // Fixed node count instead of random
+  structureIndex = 0,
 }) {
-  const nodes = useRef([]);
-
-  if (nodes.current.length === 0) {
+  // Generate fixed node positions based on structure index
+  const nodes = useMemo(() => {
+    const nodePositions = [];
+    const nodeCount = 12;
+    const radius = 1.2;
+    
+    // Create a spherical distribution of nodes
     for (let i = 0; i < nodeCount; i++) {
-      nodes.current.push([
-        (Math.random() - 0.5) * 3,
-        (Math.random() - 0.5) * 3,
-        (Math.random() - 0.5) * 3,
+      const phi = Math.acos(-1 + (2 * i) / nodeCount);
+      const theta = Math.sqrt(nodeCount * Math.PI) * phi + structureIndex;
+      
+      nodePositions.push([
+        radius * Math.cos(theta) * Math.sin(phi),
+        radius * Math.sin(theta) * Math.sin(phi),
+        radius * Math.cos(phi),
       ]);
     }
-  }
+    return nodePositions;
+  }, [structureIndex]);
 
-  const connections = [];
-  for (let i = 0; i < nodeCount; i++) {
-    const connectionCount = 2 + Math.floor(Math.random() * 2);
-    const connectedIndices = new Set();
-
-    while (connectedIndices.size < connectionCount) {
-      const targetIndex = Math.floor(Math.random() * nodeCount);
-      if (targetIndex !== i) {
-        connectedIndices.add(targetIndex);
+  // Generate fixed connections
+  const connections = useMemo(() => {
+    const conns = [];
+    const nodeCount = nodes.length;
+    
+    for (let i = 0; i < nodeCount; i++) {
+      // Connect to nearest neighbors
+      const distances = nodes.map((node, j) => ({
+        index: j,
+        distance: Math.hypot(
+          node[0] - nodes[i][0],
+          node[1] - nodes[i][1],
+          node[2] - nodes[i][2]
+        ),
+      }));
+      
+      distances.sort((a, b) => a.distance - b.distance);
+      
+      // Connect to 3 nearest neighbors
+      for (let j = 1; j <= 3 && j < distances.length; j++) {
+        const targetIndex = distances[j].index;
+        if (i < targetIndex) { // Avoid duplicate connections
+          conns.push([i, targetIndex]);
+        }
       }
     }
-
-    connectedIndices.forEach((targetIndex) => {
-      connections.push([i, targetIndex]);
-    });
-  }
+    return conns;
+  }, [nodes]);
 
   return (
     <group position={position}>
-      {nodes.current.map((pos, i) => (
-        <AnimatedNeuralNode key={i} position={pos} color={color} />
+      {nodes.map((pos, i) => (
+        <AnimatedNeuralNode 
+          key={i} 
+          position={pos} 
+          color={color}
+          delay={i * 0.1}
+        />
       ))}
 
       {connections.map(([start, end], i) => (
         <Line
           key={i}
-          points={[nodes.current[start], nodes.current[end]]}
+          points={[nodes[start], nodes[end]]}
           color={color}
-          lineWidth={1}
+          lineWidth={1.5}
           transparent
-          opacity={0.6}
+          opacity={0.4}
           toneMapped={false}
         />
       ))}
@@ -335,100 +410,221 @@ function NeuralStructure({
 }
 
 export default function Home() {
-  const structures = [];
   const colors = [
-    "#00faff",
-    "#00d9ff",
-    "#00bfff",
-    "#1e90ff",
-    "#007fff",
-    "#4dffff",
+    "#00faff", // Cyan
+    "#00d9ff", // Light blue
+    "#00bfff", // Sky blue
+    "#1e90ff", // Dodger blue
+    "#007fff", // Azure
+    "#4dffff", // Electric cyan
   ];
 
-  // Fixed number of structures (18 as requested between 12-24)
-  const fixedStructureCount = 18;
-  
-  for (let i = 0; i < fixedStructureCount; i++) {
-    structures.push({
-      position: [
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 15,
-      ],
+  // Fixed positions covering entire viewport in 3D space
+  const structures = useMemo(() => {
+    const positions = [
+      // Top row - Front layer
+      [-8, 5, 2],
+      [-4, 6, 2],
+      [0, 5.5, 2],
+      [4, 6, 2],
+      [8, 5, 2],
+      
+      // Middle-top row
+      [-7, 3, 0],
+      [-3.5, 3.5, 0],
+      [0, 3, 0],
+      [3.5, 3.5, 0],
+      [7, 3, 0],
+      
+      // Center row
+      [-8, 0, -1],
+      [-4, 0, -1],
+      [0, 0, -1],
+      [4, 0, -1],
+      [8, 0, -1],
+      
+      // Middle-bottom row
+      [-7, -3, 0],
+      [-3.5, -3.5, 0],
+      [0, -3, 0],
+      [3.5, -3.5, 0],
+      [7, -3, 0],
+      
+      // Bottom row - Front layer
+      [-8, -5, 2],
+      [-4, -6, 2],
+      [0, -5.5, 2],
+      [4, -6, 2],
+      [8, -5, 2],
+      
+      // Back layer scattered
+      [-6, 4, -4],
+      [6, 4, -4],
+      [-6, -4, -4],
+      [6, -4, -4],
+      [0, 5, -4],
+      [0, -5, -4],
+
+     
+    ];
+
+    return positions.map((position, i) => ({
+      position,
       color: colors[i % colors.length],
-      nodeCount: 18, // Fixed node count for all structures
-    });
-  }
+      structureIndex: i,
+    }));
+  }, []);
+  function CyberGridBackground() {
+  const gridRef = useRef();
+  
+  useFrame((state) => {
+    if (gridRef.current) {
+      // Subtle movement
+      gridRef.current.position.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.5;
+      gridRef.current.position.y = Math.cos(state.clock.elapsedTime * 0.08) * 0.5;
+    }
+  });
+
+  return (
+    <group ref={gridRef} position={[0, 0, -8]}>
+      {/* Main grid plane */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[60, 60, 60, 60]} />
+        <meshBasicMaterial
+          color="#001122"
+          wireframe
+          wireframeLinewidth={1}
+          transparent
+          opacity={0.2}
+        />
+      </mesh>
+      
+      {/* Vertical grid lines */}
+      <mesh rotation={[0, 0, 0]} position={[0, 0, 0]}>
+        <planeGeometry args={[60, 60, 60, 60]} />
+        <meshBasicMaterial
+          color="#003344"
+          wireframe
+          wireframeLinewidth={1}
+          transparent
+          opacity={0.15}
+        />
+      </mesh>
+      
+      {/* Glowing data points */}
+      {Array.from({ length: 50 }).map((_, i) => (
+        <mesh
+          key={i}
+          position={[
+            (Math.random() - 0.5) * 50,
+            (Math.random() - 0.5) * 50,
+            (Math.random() - 0.5) * 10
+          ]}
+        >
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshBasicMaterial
+            color="#00faff"
+            toneMapped={false}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
 
   return (
     <div className="w-screen min-h-screen border-t border-cyan-500/20 bg-[#0b1117] overflow-y-auto">
       <Navbar/>
       
-      {/* Content Section - Now scrollable on mobile */}
+      {/* Content Section */}
       <div className="relative min-h-screen">
-        <div className="absolute inset-0 flex md:left-10 items-center justify-center z-10 pointer-events-none">
+        <div className="absolute inset-0 flex md:left-10 items-center justify-center z-10 pointer-events-none pt-20">
           <Glow />
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="px-8 py-6 rounded-2xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg text-center pointer-events-auto mx-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+            className="px-8 py-6 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-cyan-500/30 shadow-2xl text-center pointer-events-auto mx-4 max-w-4xl"
           >
-            <motion.h1
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="text-4xl md:text-8xl font-bold text-cyan-200 drop-shadow-[0_0_15px_#00faff] special-font"
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.3,
+                    delayChildren: 0.2
+                  }
+                }
+              }}
             >
-              <b>MACHINE LEARNING FOR EVERYONE</b> (<b>ML4E</b>)
-            </motion.h1>
+              <motion.h1
+                variants={{
+                  hidden: { opacity: 0, y: -20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+                }}
+                className="text-3xl md:text-7xl font-bold text-cyan-200 drop-shadow-[0_0_20px_#00faff] mb-4 special-font"
+                style={{ fontFamily: "Orbitron, sans-serif" }}
+              >
+                <b>MACHINE LEARNING FOR EVERYONE</b>
+              </motion.h1>
+              
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, scale: 0.9 },
+                  visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: "easeOut" } }
+                }}
+                className="text-2xl md:text-5xl font-bold text-cyan-300 drop-shadow-[0_0_15px_#00d9ff] mb-4"
+                style={{ fontFamily: "Orbitron, sans-serif" }}
+              >
+                (ML4E)
+              </motion.div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
-              className="mt-2 text-lg md:text-2xl text-blue-300 drop-shadow-[0_0_10px_#00d9ff]"
-              style={{ fontFamily: "Roboto, sans-serif" }}
-            >
-              <ReactTyped
-                strings={["THE OFFICIAL MACHINE LEARNING CLUB OF NIT ROURKELA"]}
-                typeSpeed={50}
-                backSpeed={30}
-                backDelay={1500}
-                loop={false} 
-                showCursor={true} 
-              />
-            </motion.p>
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+                }}
+                className="mt-2 text-base md:text-xl text-blue-300 drop-shadow-[0_0_10px_#00d9ff]"
+                style={{ fontFamily: "Roboto, sans-serif" }}
+              >
+                THE OFFICIAL MACHINE LEARNING CLUB OF NIT ROURKELA
+              </motion.p>
+            </motion.div>
           </motion.div>
         </div>
 
-        {/* Canvas with fixed height and proper z-index */}
+        {/* 3D Canvas */}
         <div className="fixed inset-0 z-0">
-          <Canvas camera={{ position: [0, 0, 10], fov: 30 }}>
+          <Canvas camera={{ position: [0, 0, 15], fov: 60 }}>
             <color attach="background" args={["#000000"]} />
-            <ambientLight intensity={0.3} />
-            <pointLight position={[10, 10, 10]} intensity={2} />
+            <CyberGridBackground />
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1.5} />
+            <pointLight position={[-10, -10, -10]} intensity={0.8} color="#00faff" />
 
             {structures.map((props, i) => (
               <NeuralStructure key={i} {...props} />
             ))}
 
             <OrbitControls
-              enableZoom={false} // Disabled zoom completely
-              autoRotate={false} // Disabled auto rotation
+              enableZoom={false}
+              autoRotate={false}
               enablePan={false}
-              enableRotate={window.innerWidth > 768}
-              minDistance={8} // Prevent zoom out
-              maxDistance={12} // Prevent zoom in
-              touches={{
-                ONE: null,
-                TWO: null
-              }}
+              enableRotate={false}
+              minPolarAngle={Math.PI / 2}
+              maxPolarAngle={Math.PI / 2}
+              minDistance={10}
+              maxDistance={14}
             />
 
             <EffectComposer>
               <Bloom
-                intensity={2.5}
+                intensity={2}
                 kernelSize={3}
                 luminanceThreshold={0.1}
                 luminanceSmoothing={0.9}
@@ -436,9 +632,6 @@ export default function Home() {
             </EffectComposer>
           </Canvas>
         </div>
-
-        {/* Add some scrollable content to demonstrate scrolling */}
-      
       </div>
     </div>
   );
