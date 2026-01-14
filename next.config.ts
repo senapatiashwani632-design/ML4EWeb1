@@ -1,25 +1,30 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: true, 
+    ignoreDuringBuilds: true,
   },
+
   images: {
     remotePatterns: [
-      
       {
         protocol: "https",
-        hostname: "res.cloudinary.com", 
+        hostname: "res.cloudinary.com",
       },
-      { protocol: "https", hostname: "picsum.photos" },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
     ],
   },
-   async headers() {
+
+  async headers() {
     return [
       {
-        source: '/team/:path*',
+        source: "/team/:path*",
         headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+          },
         ],
       },
     ];

@@ -51,7 +51,7 @@ const DIRECT_LINKS = {
   Projects: "/projects",
   Achievements: "/achievements",
   Events: "/events",
-  Contact: "/contact",
+  Contact: "#contact",
 };
 
 export default function Navbar() {

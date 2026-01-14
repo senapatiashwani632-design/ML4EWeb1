@@ -7,7 +7,6 @@ import { Orbitron, JetBrains_Mono } from "next/font/google";
 import { FaGithub } from "react-icons/fa";
 import { FiArrowUpRight } from "react-icons/fi";
 import NeuralBackground from "@/app/components/NeuralBackground";
-import { TypeAnimation } from "react-type-animation";
 import { motion, AnimatePresence } from "framer-motion"; 
 import DescriptionModal from "@/app/components/DescriptionModal";
 import Navbar from "../components/Navbar";
@@ -40,6 +39,8 @@ type MenuItem = {
   title: string;
   description: string;
 };
+
+type AnimationType = "fastTyping" | "fadeIn" | "staggeredFade";
 
 const DUMMY_PROJECTS: Project[] = [];
 
@@ -115,6 +116,97 @@ const truncateDescription = (description?: string, wordLimit: number = 40): { tr
   };
 };
 
+// === OPTION 1: Fade-in Typing Animation (Very Fast) ===
+const FastTypingText = ({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) => {
+  const [displayedText, setDisplayedText] = useState("");
+  
+  useEffect(() => {
+    if (!text) return;
+    
+    const timer = setTimeout(() => {
+      // Fast typing effect - shows all text almost instantly with slight character-by-character feel
+      let currentIndex = 0;
+      const speed = 10; // Very fast (lower = faster)
+      
+      const typeCharacter = () => {
+        if (currentIndex <= text.length) {
+          setDisplayedText(text.substring(0, currentIndex));
+          currentIndex++;
+          setTimeout(typeCharacter, speed);
+        }
+      };
+      
+      typeCharacter();
+    }, delay * 1000);
+    
+    return () => clearTimeout(timer);
+  }, [text, delay]);
+  
+  return <span className={className}>{displayedText}</span>;
+};
+
+// === OPTION 2: Simple Fade In Animation ===
+const FadeInText = ({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) => {
+  return (
+    <motion.span
+      className={className}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, delay: delay, ease: "easeOut" }}
+    >
+      {text}
+    </motion.span>
+  );
+};
+
+// === OPTION 3: Staggered Fade In (Character by Character) ===
+const StaggeredFadeText = ({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) => {
+  const characters = text.split('');
+  
+  return (
+    <span className={className}>
+      {characters.map((char, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ 
+            duration: 0.05, 
+            delay: delay + (index * 0.01), // Very fast staggered effect
+            ease: "easeOut" 
+          }}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </span>
+  );
+};
+
+// === ANIMATED TEXT COMPONENT (Handles all animation types) ===
+const AnimatedText = ({ 
+  text, 
+  className = "", 
+  delay = 0, 
+  animationType = "fastTyping" 
+}: { 
+  text: string, 
+  className?: string, 
+  delay?: number,
+  animationType?: AnimationType
+}) => {
+  if (animationType === "fastTyping") {
+    return <FastTypingText text={text} className={className} delay={delay} />;
+  } else if (animationType === "fadeIn") {
+    return <FadeInText text={text} className={className} delay={delay} />;
+  } else if (animationType === "staggeredFade") {
+    return <StaggeredFadeText text={text} className={className} delay={delay} />;
+  }
+  
+  // Default fallback
+  return <FadeInText text={text} className={className} delay={delay} />;
+};
+
 // === MAIN COMPONENT ===
 export default function ViewProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -123,6 +215,9 @@ export default function ViewProjectsPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+  
+  // Animation type - choose one
+  const animationType: AnimationType = "fadeIn";
 
   // === FETCH PROJECTS FROM BACKEND ===
   useEffect(() => {
@@ -243,31 +338,30 @@ export default function ViewProjectsPage() {
                   transition={{ duration: 0.8, delay: 0.4 }}
                   viewport={{ once: true }}
                 >
-                  {/* === PROJECT TITLE - Typing Effect === */}
+                  {/* === PROJECT TITLE - Fast Animation === */}
                   <motion.div
                     className="w-full text-center"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.2, delay: 0.5 }}
+                    transition={{ duration: 0.1, delay: 0.3 }}
                     viewport={{ once: true }}
                   >
-                    <TypeAnimation
-                      sequence={[project.name || "Untitled Project"]}
-                      wrapper="h2"
-                      speed={90}
-                      className={`text-3xl font-bold text-white font-[Orbitron] `}
-                      cursor={false}
+                    <AnimatedText
+                      text={project.name || "Untitled Project"}
+                      className={`text-3xl font-bold text-white font-[Orbitron]`}
+                      delay={0.3}
+                      animationType={animationType}
                     />
                   </motion.div>
 
-                  {/* === DESCRIPTION BOX - Typing Effect === */}
+                  {/* === DESCRIPTION BOX - Fast Animation === */}
                   {project.description && (
                     <motion.div
                       className="bg-slate-800/60 backdrop-blur-md rounded-lg border border-slate-700 w-full cursor-pointer hover:border-cyan-600/50 transition-all overflow-hidden"
                       onClick={() => setSelectedProject(project)}
                       initial={{ opacity: 0, y: 10 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.6 }}
+                      transition={{ duration: 0.3, delay: 0.3 }}
                       viewport={{ once: true }}
                     >
                       {/* Window Header Style Dots */}
@@ -277,19 +371,13 @@ export default function ViewProjectsPage() {
                         <span className="block w-3 h-3 rounded-full bg-green-500"></span>
                       </div>
 
-                      {/* Typing Animation Description */}
+                      {/* Animated Description */}
                       <div className="p-6">
-                        <TypeAnimation
-                          sequence={[
-                            isDescriptionExpanded ? project.description : truncatedDesc,
-                            500
-                          ]}
-                          wrapper="p"
-                          speed={30}
+                        <AnimatedText
+                          text={isDescriptionExpanded ? project.description : truncatedDesc}
                           className={`text-gray-300 text-base ${jetbrainsMono.className}`}
-                          style={{ whiteSpace: "pre-line" }}
-                          repeat={0}
-                          cursor={false}
+                          delay={0.4}
+                          animationType={animationType}
                         />
                         
                         {/* View More for Description */}
@@ -322,20 +410,31 @@ export default function ViewProjectsPage() {
                       </p>
                       <div className="flex flex-wrap gap-2 justify-start">
                         {displayedTech.map((tech, techIndex) => (
-                          <span
+                          <motion.span
                             key={techIndex}
                             className="px-3 py-1 bg-slate-700/50 rounded-full text-sm text-cyan-200 border border-cyan-500/30"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ 
+                              duration: 0.3, 
+                              delay: 0.7 + (techIndex * 0.05) 
+                            }}
+                            viewport={{ once: true }}
                           >
                             {tech}
-                          </span>
+                          </motion.span>
                         ))}
                         {remainingTech > 0 && (
-                          <button
+                          <motion.button
                             onClick={() => setSelectedProject(project)}
                             className="px-3 py-1 bg-cyan-600/20 rounded-full text-sm text-cyan-300 border border-cyan-400/30 hover:bg-cyan-600/30 transition-colors"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3, delay: 0.9 }}
+                            viewport={{ once: true }}
                           >
                             +{remainingTech} more
-                          </button>
+                          </motion.button>
                         )}
                       </div>
                     </motion.div>
@@ -352,27 +451,35 @@ export default function ViewProjectsPage() {
                     viewport={{ once: true }}
                   >
                     {project.deployedLink && (
-                      <a
+                      <motion.a
                         href={project.deployedLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{ color: theme.accent }}
                         className="flex items-center gap-2 text-lg hover:underline"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: 0.9 }}
+                        viewport={{ once: true }}
                       >
                         View Project
                         <FiArrowUpRight />
-                      </a>
+                      </motion.a>
                     )}
                     {project.githubLink && (
-                      <a
+                      <motion.a
                         href={project.githubLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-2xl hover:scale-110 transition-transform"
                         style={{ color: theme.accent }}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: 1.0 }}
+                        viewport={{ once: true }}
                       >
                         <FaGithub />
-                      </a>
+                      </motion.a>
                     )}
                   </motion.div>
                 </motion.div>
@@ -382,7 +489,7 @@ export default function ViewProjectsPage() {
         </div>
       </div>
 
-      {/* === DESCRIPTION MODAL - Updated to include Tech Stack === */}
+      {/* === DESCRIPTION MODAL === */}
       <AnimatePresence>
         {selectedProject && (
           <DescriptionModal

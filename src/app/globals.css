@@ -72,3 +72,6 @@ body {
 .pointer-events-none > .breath {
   animation: soft-breath 5.5s ease-in-out infinite;
 }
+html {
+  scroll-behavior: smooth;
+}
