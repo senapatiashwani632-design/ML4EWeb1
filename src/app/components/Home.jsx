@@ -535,7 +535,7 @@ export default function Home() {
 }
 
   return (
-    <div className="w-screen min-h-screen border-t border-cyan-500/20 bg-[#0b1117] overflow-y-auto">
+    <div className="relative w-full min-h-screen bg-[#0b1117] overflow-hidden" suppressHydrationWarning>
       <Navbar/>
       
       {/* Content Section */}

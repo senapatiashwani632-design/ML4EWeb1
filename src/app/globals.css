@@ -34,12 +34,13 @@ body {
     font-style: normal;
   }
 }
+
 @layer utilities {
-.special-font b {
+  .special-font b {
     font-family: "Zentry";
     font-feature-settings: "ss01" on;
   }
-}  
+}
 
 /* === Animated Background Helpers === */
 
@@ -49,10 +50,12 @@ body {
     opacity: 0.34;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.46;
     transform: scale(1.02);
   }
+
   100% {
     opacity: 0.34;
     transform: scale(1);
@@ -69,9 +72,44 @@ body {
 }
 
 /* apply gentle breathing to radial lights */
-.pointer-events-none > .breath {
+.pointer-events-none>.breath {
   animation: soft-breath 5.5s ease-in-out infinite;
 }
-html {
-  scroll-behavior: smooth;
+
+/* Border Animation */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin {
+  from {
+    --angle: 0deg;
+  }
+
+  to {
+    --angle: 360deg;
+  }
+}
+
+.animate-border::after,
+.animate-border::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  /* Extends beyond the container */
+  background-image: conic-gradient(from var(--angle), #ff4545, #00ff99, #006aff, #ff0095, #ff4545);
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  border-radius: inherit;
+  /* Inherits rounded-3xl from parent */
+  animation: 3s spin linear infinite;
+}
+
+.animate-border::before {
+  filter: blur(1.5rem);
+  opacity: 0.5;
 }

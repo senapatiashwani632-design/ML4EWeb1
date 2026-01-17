@@ -67,13 +67,17 @@ export default function Navbar() {
       }
     };
 
+    const handleOpenNav = () => setIsOpen(true);
+
     if (typeof window !== "undefined") {
       window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("open-navigation", handleOpenNav);
     }
 
     return () => {
       if (typeof window !== "undefined") {
         window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("open-navigation", handleOpenNav);
       }
     };
   }, []);

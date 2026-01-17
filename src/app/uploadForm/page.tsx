@@ -86,11 +86,12 @@ const UploadPage: React.FC = () => {
         />
       </div>
 
-      <div className="w-full md:w-1/2 min-h-screen flex items-center justify-center p-6 sm:p-10 bg-gradient-to-b from-[#0A0A23] via-[#1B1B3A] to-[#3C4EC0]">
+      <div className="w-full md:w-1/2 min-h-screen flex items-center justify-center p-6 sm:p-10 bg-gradient-to-b from-[#0A0A23] via-[#1B1B3A] to-[#3C4EC0]" suppressHydrationWarning>
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-xl text-white p-6 sm:p-8 rounded-xl border border-blue-500 shadow-[0_0_15px_2px_rgba(100,149,237,0.4)] backdrop-blur-sm"
           encType="multipart/form-data"
+          suppressHydrationWarning
         >
           <h2 className="text-3xl font-bold mb-8 text-center">Submit Event</h2>
 
