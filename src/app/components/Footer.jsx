@@ -45,7 +45,7 @@ export default function Footer() {
               </div>
 
               <a
-                href="mailto:swaina@nitrkl.ac.in"
+                href="mailto:baigm@nitrkl.ac.in"
                 className="relative z-10 mt-6 w-full flex items-center justify-center gap-2 rounded-lg bg-cyan-950/50 border border-cyan-500/20 px-4 py-3 text-sm text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 hover:text-white hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300"
               >
                 <Mail size={16} /> baigm@nitrkl.ac.in
@@ -76,7 +76,7 @@ export default function Footer() {
               </div>
 
               <a
-                href="mailto:122me0896@nitrkl.ac.in"
+                href="mailto:123ee0291@nitrkl.ac.in"
                 className="relative z-10 mt-6 w-full flex items-center justify-center gap-2 rounded-lg bg-purple-950/30 border border-purple-500/20 px-4 py-3 text-sm text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 hover:text-white hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] transition-all duration-300"
               >
                 <Mail size={16} /> 123ee0291@nitrkl.ac.in
