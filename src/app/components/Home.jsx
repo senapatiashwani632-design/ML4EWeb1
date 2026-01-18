@@ -904,7 +904,7 @@ export default function Home() {
                   hidden: { opacity: 0, y: -20 },
                   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
                 }}
-                className={`${isMobile ? 'text-2xl' : 'text-3xl md:text-7xl'} font-bold text-cyan-200 drop-shadow-[0_0_20px_#00faff] mb-4 special-font`}
+                className={`${isMobile ? 'text-4xl' : 'text-3xl md:text-7xl'} font-bold text-cyan-200 drop-shadow-[0_0_20px_#00faff] mb-4 special-font`}
                 style={{ fontFamily: "Orbitron, sans-serif" }}
               >
                 <b>MACHINE LEARNING FOR EVERYONE</b>

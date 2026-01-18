@@ -116,11 +116,11 @@ const WhatWeDo = () => {
         {/* Steps */}
         <div className="flex flex-col gap-[64px]">
           {/* STEP 1 */}
-          <div className="flex max-md:flex-col-reverse items-center">
-            <div className="w-1/2 max-md:w-full flex flex-col gap-[28px]">
-              <div id="textLeftFirst" className="text-right text-white">
-                <h2 className="font-orbitron text-[36px] font-bold">Open Source</h2>
-                <p className="text-[20px] opacity-90">
+          <div className=" backdrop-blur-lg rounded-sm flex max-md:flex-col-reverse items-center">
+            <div className=" w-1/2 max-md:w-full flex flex-col gap-[28px]">
+              <div id="textLeftFirst" className="  text-right text-white">
+                <h2 className="pr-5 font-orbitron text-[36px] font-bold">Open Source</h2>
+                <p className="pr-5 text-[20px] opacity-90">
                   Collaborate globally and build real-world machine learning products with developers and researchers.
                   Work on scalable systems, AI tools, and community-driven innovations used worldwide.
                   Leave your mark on open-source while accelerating your growth as a machine learning engineer.
@@ -150,11 +150,11 @@ const WhatWeDo = () => {
           </div>
 
           {/* STEP 2 */}
-          <div className="flex flex-row-reverse max-md:flex-col-reverse items-center">
+          <div className=" backdrop-blur-lg rounded-sm flex flex-row-reverse max-md:flex-col-reverse items-center">
             <div className="w-1/2 max-md:w-full flex flex-col gap-[28px]">
               <div id="textRight" className="text-left text-white">
-                <h2 className="font-orbitron text-[36px] font-bold">Hackathons</h2>
-                <p className="text-[20px] opacity-90">
+                <h2 className="pl-5 font-orbitron text-[36px] font-bold">Hackathons</h2>
+                <p className="pl-5 text-[20px] opacity-90">
                   Participate in global hackathons, workshops, and collaborative tech events to sharpen your skills.
                   Build real-world AI solutions, compete with top innovators, and gain hands-on industry experience.
                   Showcase your talent, expand your network, and turn ideas into impactful projects.
@@ -181,13 +181,13 @@ const WhatWeDo = () => {
           </div>
 
           {/* STEP 3 */}
-          <div className="flex max-md:flex-col-reverse items-center">
+          <div className=" backdrop-blur-lg rounded-sm flex max-md:flex-col-reverse items-center">
             <div className="w-1/2 max-md:w-full flex flex-col gap-[28px]">
               <div id="textLeftSecond" className="text-right text-white">
-                <h2 className="font-orbitron text-[36px] font-bold">
+                <h2 className="pr-5 font-orbitron text-[36px] font-bold">
                   Data Science &  Much More
                 </h2>
-                <p className="text-[20px] opacity-90">
+                <p className="pr-5 text-[20px] opacity-90">
                   Learn AI, data science, deep learning, MLOps, and many more industry-ready technologies.
                   Master modern tools, frameworks, and workflows used by top tech companies.
                   Transform your learning into deployable solutions and job-ready expertise.
