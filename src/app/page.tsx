@@ -12,16 +12,38 @@
 //   );
 // }
 "use client"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import Footer from "./components/Footer";
 
 const Home = dynamic(() => import("./components/Home"), { ssr: false });
+const AboutUs = dynamic(() => import("./components/AboutUs"), { ssr: false });
+const WhatWeDo = dynamic(() => import("./components/WhatWeDo"), { ssr: false });
 
 // Preloader Component
 function Preloader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0);
+  const [dots, setDots] = useState<Array<{ left: string; top: string; duration: number; delay: number }>>([]);
+
+  useEffect(() => {
+    // Generate dots only on client-side to avoid hydration mismatch
+    const mulberry32 = (seed: number) => {
+      return () => {
+        let t = (seed += 0x6d2b79f5);
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    };
+    const rand = mulberry32(123456); // deterministic seed
+    const generatedDots = Array.from({ length: 20 }).map(() => ({
+      left: `${rand() * 100}%`,
+      top: `${rand() * 100}%`,
+      duration: 2 + rand() * 2,
+      delay: rand() * 2,
+    }));
+    setDots(generatedDots);
+  }, []);
 
   useEffect(() => {
     // Simulate loading progress
@@ -56,22 +78,22 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
 
       {/* Neural Network Animation */}
       <div className="absolute inset-0 pointer-events-none opacity-30">
-        {[...Array(20)].map((_, i) => (
+        {dots.map((dot, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-cyan-400 rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: dot.left,
+              top: dot.top,
             }}
             animate={{
               scale: [0, 1, 0],
               opacity: [0, 1, 0],
             }}
             transition={{
-              duration: 2 + Math.random() * 2,
+              duration: dot.duration,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: dot.delay,
             }}
           />
         ))}
@@ -91,7 +113,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
             ML4E
           </h1>
           <p className="text-xl md:text-2xl text-blue-300 
-            drop-shadow-[0_0_10px_#00d9ff]" 
+            drop-shadow-[0_0_10px_#00d9ff]"
             style={{ fontFamily: "Roboto, sans-serif" }}>
             Machine Learning For Everyone
           </p>
@@ -109,7 +131,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
               animate={{ width: `${Math.min(progress, 100)}%` }}
               transition={{ duration: 0.3 }}
             />
-            
+
             {/* Glowing effect on progress bar */}
             <motion.div
               className="absolute inset-y-0 left-0 bg-gradient-to-r 
@@ -178,11 +200,13 @@ export default function App() {
       </AnimatePresence>
 
       {/* Home component loads in background while preloader shows */}
-      <div style={{ display: isLoading ? "none" : "block" }}>
+      <div style={{ display: isLoading ? "none" : "block" }} className="w-full">
         {showHome && (
-          <>
+          <div className="w-full">
             <Home />
-          </>
+            <AboutUs />
+            <WhatWeDo />
+          </div>
         )}
       </div>
     </>
