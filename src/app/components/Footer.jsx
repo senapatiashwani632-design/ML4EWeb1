@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Linkedin, Instagram, Mail, Phone } from "lucide-react";
+import { Linkedin, Instagram, Mail, Phone, MapPin } from "lucide-react";
 
 const Glow = ({ className = "" }) => (
   <div
@@ -13,7 +13,10 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="contact" className="relative z-30 w-full overflow-hidden bg-[#0b1117] text-slate-200 border-t border-cyan-500/20 font-sans">
+    <footer
+      id="contact"
+      className="relative z-30 w-full overflow-hidden bg-[#0b1117] text-slate-200 border-t border-cyan-500/20 font-sans"
+    >
       <Glow />
 
       <div className="relative w-full max-w-7xl mx-auto px-4 py-16 sm:px-8 flex flex-col items-center">
@@ -81,6 +84,71 @@ export default function Footer() {
               >
                 <Mail size={16} /> 123ee0291@nitrkl.ac.in
               </a>
+            </div>
+          </div>
+        </div>
+
+        {/* MAP SECTION */}
+        <div className="w-full max-w-5xl mb-16">
+          <div className="group relative w-full p-1 rounded-2xl bg-gradient-to-b from-white/10 to-white/5 hover:from-cyan-500/50 hover:to-purple-600/50 transition-all duration-500">
+            <div className="relative rounded-xl bg-[#0b1117]/90 backdrop-blur-xl border border-white/10 group-hover:border-cyan-500/30 transition-all duration-300 overflow-hidden">
+              <div className="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10 items-center">
+                {/* Left Text */}
+                <div className="text-left">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="p-2 rounded-lg bg-white/5 border border-white/10 group-hover:border-cyan-400/40 transition-all duration-300">
+                      <MapPin className="w-5 h-5 text-cyan-300 group-hover:text-cyan-200 transition-colors" />
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold font-[Orbitron] tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]">
+                      Our Location
+                    </h3>
+                  </div>
+
+                  <p className="text-sm md:text-base text-slate-300 leading-relaxed">
+                    We are based at{" "}
+                    <span className="text-cyan-200 font-semibold">
+                      National Institute of Technology, Rourkela
+                    </span>
+                    . Visit us anytime for workshops, events, and ML sessions.
+                  </p>
+
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <a
+                      href="https://www.google.com/maps/place/National+Institute+of+Technology,+Rourkela"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center rounded-lg bg-cyan-950/50 border border-cyan-500/20 px-4 py-3 text-sm text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 hover:text-white hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300"
+                    >
+                      Open in Google Maps
+                    </a>
+
+                    <div className="inline-flex items-center justify-center rounded-lg bg-white/5 border border-white/10 px-4 py-3 text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
+                      NIT Rourkela, Odisha
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Map */}
+                <div className="w-full">
+                  <div className="relative rounded-2xl overflow-hidden border border-white/10 group-hover:border-cyan-400/30 transition-all duration-300 shadow-[0_0_25px_rgba(34,211,238,0.08)]">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3692.6580075931847!2d84.89836787529116!3d22.253050979720562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a201f72bbd561c3%3A0xab5c70e76a7b5a!2sNational%20Institute%20of%20Technology%2C%20Rourkela!5e0!3m2!1sen!2sin!4v1768758104936!5m2!1sen!2sin"
+                      className="w-full h-[260px] md:h-[320px] rounded-2xl"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="NIT Rourkela Location"
+                    ></iframe>
+                  </div>
+
+                  <p className="mt-3 text-xs text-slate-500 text-center font-[Orbitron] tracking-wider">
+                    ML4E • NIT Rourkela Campus Map
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
