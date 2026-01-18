@@ -13,7 +13,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative z-30 w-full overflow-hidden bg-[#0b1117] text-slate-200 border-t border-cyan-500/20 font-sans">
+    <footer id="contact" className="relative z-30 w-full overflow-hidden bg-[#0b1117] text-slate-200 border-t border-cyan-500/20 font-sans">
       <Glow />
 
       <div className="relative w-full max-w-7xl mx-auto px-4 py-16 sm:px-8 flex flex-col items-center">
