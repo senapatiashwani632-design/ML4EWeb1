@@ -304,7 +304,7 @@ export default function Navbar() {
     <button
       onClick={onClick}
       aria-label="Close menu"
-      className={`flex items-center justify-center w-12 h-12 rounded-full border border-red-500/30 bg-red-500/10 backdrop-blur-sm text-red-400 text-2xl font-bold hover:bg-red-500/20 transition-all ${className}`}
+      className={`flex items-center justify-center w-12 h-12 rounded-full border-blue-500/20 bg-blue-500/10 backdrop-blur-sm text-blue-400 text-2xl font-bold hover:bg-blue-500/20 transition-all ${className}`}
     >
       ×
     </button>
