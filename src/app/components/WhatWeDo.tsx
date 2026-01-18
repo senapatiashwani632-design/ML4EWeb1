@@ -49,7 +49,8 @@ const WhatWeDo = () => {
       [lottieRef1, lottieRef2, lottieRef3].forEach((ref) => {
         if (ref.current) {
           gsap.from(ref.current, {
-            scale: 0.1,
+            scale: 0.8,
+            autoAlpha: 0,
             scrollTrigger: {
               trigger: ref.current,
               scrub: true,
