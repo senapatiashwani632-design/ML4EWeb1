@@ -190,9 +190,47 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
                 <div className="absolute inset-8 rounded-full bg-gradient-to-br from-cyan-400/30 to-blue-500/30">
                   <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
                 </div>
+                {/* ML4E text */}
+<div className="absolute inset-0 flex items-center justify-center">
+  <motion.div
+    animate={{ 
+      scale: [1, 1.05, 1],
+      rotateY: [0, 180, 360] 
+    }}
+    transition={{ 
+      duration: 4, 
+      repeat: Infinity, 
+      ease: "linear" 
+    }}
+    className="relative w-16 h-16"
+  >
+    {/* Optional glow effect */}
+    <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-md" />
+    
+    {/* Favicon image */}
+    <img 
+      src="/favicon.ico" 
+      alt="ML4E"
+      className="relative w-full h-full object-contain rounded-full drop-shadow-[0_0_10px_rgba(0,245,255,0.6)]"
+    />
+    
+    {/* Optional pulsing ring */}
+    <motion.div
+      className="absolute -inset-2 rounded-full border border-cyan-300/40"
+      animate={{
+        scale: [1, 1.15, 1],
+        opacity: [0.3, 0.1, 0.3]
+      }}
+      transition={{
+        duration: 2,
+        repeat: Infinity
+      }}
+    />
+  </motion.div>
+</div>
                 
                 {/* ML4E text */}
-                <div className="absolute inset-0 flex items-center justify-center">
+                {/* <div className="absolute inset-0 flex items-center justify-center">
                   <motion.span
                     animate={{ opacity: [0.7, 1, 0.7] }}
                     transition={{ duration: 2, repeat: Infinity }}
@@ -200,7 +238,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
                   >
                     ML4E
                   </motion.span>
-                </div>
+                </div> */}
               </div>
             </motion.div>
 
