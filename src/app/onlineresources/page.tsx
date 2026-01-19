@@ -252,9 +252,9 @@ export default function OnlineResources() {
       <Navbar />
       
       {/* FOOTER REMOVAL HACK */}
-      <style jsx global>{`
+      {/* <style jsx global>{`
         footer, .footer, [data-testid="footer"] { display: none !important; }
-      `}</style>
+      `}</style> */}
       
       <div className="relative z-10 pt-32 pb-20 px-4 sm:px-8 pl-24 md:pl-32 max-w-7xl mx-auto">
         
