@@ -1,7 +1,8 @@
-"use client";
+"use client"
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 const ANIMATIONS = {
   overlay: {
@@ -311,7 +312,7 @@ export default function Navbar() {
       aria-label="Close menu"
       className={`flex items-center justify-center w-12 h-12 rounded-full border-blue-500/20 bg-blue-500/10 backdrop-blur-sm text-blue-400 text-2xl font-bold hover:bg-blue-500/20 transition-all ${className}`}
     >
-      ×
+      <X/>
     </button>
   );
 
