@@ -49,8 +49,8 @@ const DROPDOWN_CONFIG = {
 // ✅ Direct link configurations - UPDATED WITH NEW LINKS
 const DIRECT_LINKS = {
   Home: "/",
-  "About Us": "#about",
-  "What We Do": "#processhead",
+  "About Us": "/#about",
+  "What We Do": "/#processhead",
   Projects: "/projects",
   Achievements: "/achievements",
   Events: "/events",
