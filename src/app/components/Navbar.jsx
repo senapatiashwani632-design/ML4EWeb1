@@ -45,9 +45,11 @@ const DROPDOWN_CONFIG = {
   },
 };
 
-// ✅ Direct link configurations
+// ✅ Direct link configurations - UPDATED WITH NEW LINKS
 const DIRECT_LINKS = {
   Home: "/",
+  "About Us": "#about",
+  "What We Do": "#processhead",
   Projects: "/projects",
   Achievements: "/achievements",
   Events: "/events",
@@ -89,8 +91,11 @@ export default function Navbar() {
 
   const toggleMenu = () => setIsOpen((v) => !v);
 
+  // ✅ Updated mainLinks array with new links in appropriate order
   const mainLinks = [
     "Home",
+    "About Us",
+    "What We Do",
     "Projects",
     "Events",
     "Team",
