@@ -7,6 +7,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 import { ChevronRight } from "lucide-react";
+import * as THREE from "three";
 
 const Glow = ({ className = "" }) => (
   <div
@@ -15,20 +16,71 @@ const Glow = ({ className = "" }) => (
   />
 );
 
-function AnimatedNeuralNode({ position, color, size = 0.08, delay = 0 }) {
+// Optimized animation progress hook
+function useAnimationProgress(duration = 2000, delay = 500) {
+  const [progress, setProgress] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const rafRef = useRef();
+
+  useEffect(() => {
+    let startTime = null;
+    let animationFrameId = null;
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const rawProgress = Math.min(elapsed / duration, 1);
+      
+      // Smooth easing function
+      const easedProgress = 1 - Math.pow(1 - rawProgress, 3);
+      setProgress(easedProgress);
+
+      if (rawProgress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        setIsComplete(true);
+      }
+    };
+
+    const startAnimation = () => {
+      startTime = null;
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    const timeoutId = setTimeout(startAnimation, delay);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [duration, delay]);
+
+  return { progress, isComplete };
+}
+
+function AnimatedNeuralNode({ position, color, size = 0.08, delay = 0, animationProgress = 1 }) {
   const ref = useRef();
+  const initialPos = useMemo(() => new THREE.Vector3(0, 0, 0), []);
+  const targetPos = useMemo(() => new THREE.Vector3(...position), [position]);
 
   useFrame((state) => {
     if (ref.current) {
-      const time = state.clock.elapsedTime + delay;
-      ref.current.scale.x = 1 + Math.sin(time * 2) * 0.15;
-      ref.current.scale.y = 1 + Math.sin(time * 2) * 0.15;
-      ref.current.scale.z = 1 + Math.sin(time * 2) * 0.15;
+      // Position animation
+      ref.current.position.lerpVectors(initialPos, targetPos, animationProgress);
+      
+      // Scale animation only when animation is mostly complete
+      if (animationProgress > 0.8) {
+        const time = state.clock.elapsedTime + delay;
+        const scale = 1 + Math.sin(time * 2) * 0.15;
+        ref.current.scale.setScalar(scale);
+      } else {
+        ref.current.scale.setScalar(1);
+      }
     }
   });
 
   return (
-    <Sphere ref={ref} args={[size, 32, 32]} position={position}>
+    <Sphere ref={ref} args={[size, 16, 16]}>
       <meshStandardMaterial
         color={color}
         emissive={color}
@@ -43,10 +95,15 @@ function NeuralStructure({
   position = [0, 0, 0],
   color = "#00faff",
   structureIndex = 0,
+  animationProgress = 1,
 }) {
+  const groupRef = useRef();
+  const initialPos = useMemo(() => new THREE.Vector3(0, 0, 0), []);
+  const targetPos = useMemo(() => new THREE.Vector3(...position), [position]);
+
   const nodes = useMemo(() => {
     const nodePositions = [];
-    const nodeCount = 12;
+    const nodeCount = 8; // Reduced for performance
     const radius = 1.2;
     
     for (let i = 0; i < nodeCount; i++) {
@@ -66,50 +123,58 @@ function NeuralStructure({
     const conns = [];
     const nodeCount = nodes.length;
     
+    // Simplified connection logic
     for (let i = 0; i < nodeCount; i++) {
-      const distances = nodes.map((node, j) => ({
-        index: j,
-        distance: Math.hypot(
-          node[0] - nodes[i][0],
-          node[1] - nodes[i][1],
-          node[2] - nodes[i][2]
-        ),
-      }));
-      
-      distances.sort((a, b) => a.distance - b.distance);
-      
-      for (let j = 1; j <= 3 && j < distances.length; j++) {
-        const targetIndex = distances[j].index;
-        if (i < targetIndex) {
-          conns.push([i, targetIndex]);
-        }
+      for (let j = i + 1; j < Math.min(i + 3, nodeCount); j++) {
+        conns.push([i, j]);
       }
     }
     return conns;
   }, [nodes]);
 
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.position.lerpVectors(initialPos, targetPos, animationProgress);
+    }
+  });
+
   return (
-    <group position={position}>
+    <group ref={groupRef}>
       {nodes.map((pos, i) => (
         <AnimatedNeuralNode 
           key={i} 
           position={pos} 
           color={color}
-          delay={i * 0.1}
+          delay={i * 0.05} // Reduced delay
+          animationProgress={animationProgress}
         />
       ))}
 
-      {connections.map(([start, end], i) => (
-        <Line
-          key={i}
-          points={[nodes[start], nodes[end]]}
-          color={color}
-          lineWidth={1.5}
-          transparent
-          opacity={0.4}
-          toneMapped={false}
-        />
-      ))}
+      {connections.map(([start, end], i) => {
+        // Calculate positions based on animation progress
+        const startPos = [
+          nodes[start][0] * animationProgress,
+          nodes[start][1] * animationProgress,
+          nodes[start][2] * animationProgress
+        ];
+        const endPos = [
+          nodes[end][0] * animationProgress,
+          nodes[end][1] * animationProgress,
+          nodes[end][2] * animationProgress
+        ];
+        
+        return (
+          <Line
+            key={i}
+            points={[startPos, endPos]}
+            color={color}
+            lineWidth={1}
+            transparent
+            opacity={0.3 * animationProgress}
+            toneMapped={false}
+          />
+        );
+      })}
     </group>
   );
 }
@@ -181,6 +246,11 @@ export default function Home() {
   ];
 
   const [isMobile, setIsMobile] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  
+  // Use optimized animation hook
+  const { progress: animationProgress, isComplete } = useAnimationProgress(2000, 300);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -189,8 +259,21 @@ export default function Home() {
     
     checkMobile();
     window.addEventListener('resize', checkMobile);
+
+    // Show text when animation is complete
+    if (isComplete) {
+      const textTimeout = setTimeout(() => {
+        setShowText(true);
+        const buttonTimeout = setTimeout(() => {
+          setShowButton(true);
+        }, 800);
+        return () => clearTimeout(buttonTimeout);
+      }, 200);
+      return () => clearTimeout(textTimeout);
+    }
+
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [isComplete]);
 
   const structures = useMemo(() => {
     const positions = [
@@ -227,20 +310,21 @@ export default function Home() {
       [0, -5, -4],
     ];
 
-    return positions.map((position, i) => ({
+    // Reduce structures on mobile for performance
+    const filteredPositions = isMobile ? positions.slice(0, 15) : positions;
+    
+    return filteredPositions.map((position, i) => ({
       position,
       color: colors[i % colors.length],
       structureIndex: i,
     }));
-  }, [colors]);
+  }, [colors, isMobile]);
 
   const handleExploreClick = () => {
-    // Dispatch custom event to open navbar
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("open-navigation"));
     }
     
-    // Also scroll to next section if needed
     window.scrollTo({
       top: window.innerHeight,
       behavior: 'smooth'
@@ -256,66 +340,49 @@ export default function Home() {
         <div className={`absolute inset-0 flex ${isMobile ? 'items-start pt-32' : 'items-center justify-center'} z-10 pointer-events-none`}>
           <Glow />
           
-          {/* Main Content Container */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-            className={`flex flex-col items-center justify-center px-8 py-6 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-cyan-500/30 shadow-2xl text-center pointer-events-auto mx-4 ${isMobile ? 'mt-8 max-w-[90%]' : 'max-w-4xl'}`}
-          >
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.3,
-                    delayChildren: 0.2
-                  }
-                }
-              }}
-              className="flex flex-col items-center"
-            >
-              <motion.h1
-                variants={{
-                  hidden: { opacity: 0, y: -20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-                }}
-                className={`${isMobile ? 'text-4xl' : 'text-3xl md:text-7xl'} font-bold text-cyan-200 drop-shadow-[0_0_20px_#00faff] mb-4 special-font`}
-                style={{ fontFamily: "Orbitron, sans-serif" }}
-              >
-                <b>MACHINE LEARNING FOR EVERYONE</b>
-              </motion.h1>
-              
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, scale: 0.9 },
-                  visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: "easeOut" } }
-                }}
-                className={`${isMobile ? 'text-xl' : 'text-2xl md:text-5xl'} font-bold text-cyan-300 drop-shadow-[0_0_15px_#00d9ff] mb-4`}
-                style={{ fontFamily: "Orbitron, sans-serif" }}
-              >
-                (ML4E)
-              </motion.div>
+          {/* Main Content Container - Animation controlled by showText state */}
+          <div className={`flex flex-col items-center justify-center px-8 py-6 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-cyan-500/30 shadow-2xl text-center pointer-events-auto mx-4 ${isMobile ? 'mt-8 max-w-[90%]' : 'max-w-4xl'}`}>
+            {/* Text appears only after neural networks spread */}
+            {showText && (
+              <div className="flex flex-col items-center">
+                <motion.h1
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className={`${isMobile ? 'text-4xl' : 'text-3xl md:text-7xl'} font-bold text-cyan-200 drop-shadow-[0_0_20px_#00faff] mb-4 special-font`}
+                  style={{ fontFamily: "Orbitron, sans-serif" }}
+                >
+                  <b>MACHINE LEARNING FOR EVERYONE</b>
+                </motion.h1>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                  className={`${isMobile ? 'text-xl' : 'text-2xl md:text-5xl'} font-bold text-cyan-300 drop-shadow-[0_0_15px_#00d9ff] mb-4`}
+                  style={{ fontFamily: "Orbitron, sans-serif" }}
+                >
+                  (ML4E)
+                </motion.div>
 
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-                }}
-                className={`mt-2 ${isMobile ? 'text-sm' : 'text-base md:text-xl'} text-blue-300 drop-shadow-[0_0_10px_#00d9ff] mb-8 md:mb-12`}
-                style={{ fontFamily: "Roboto, sans-serif" }}
-              >
-                THE OFFICIAL MACHINE LEARNING CLUB OF NIT ROURKELA
-              </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+                  className={`mt-2 ${isMobile ? 'text-sm' : 'text-base md:text-xl'} text-blue-300 drop-shadow-[0_0_10px_#00d9ff] mb-8 md:mb-12`}
+                  style={{ fontFamily: "Roboto, sans-serif" }}
+                >
+                  THE OFFICIAL MACHINE LEARNING CLUB OF NIT ROURKELA
+                </motion.p>
+              </div>
+            )}
 
-              {/* Eye-catching Learn More Button */}
+            {/* Button appears after text animation */}
+            {showButton && (
               <motion.button
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.5, ease: "easeOut" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
                 onClick={handleExploreClick}
                 className="group relative overflow-hidden px-8 md:px-12 py-3 md:py-4 rounded-full bg-gradient-to-r from-cyan-500/20 via-cyan-600/30 to-blue-500/20 border border-cyan-400/50 hover:border-cyan-300 transition-all duration-300 cursor-pointer shadow-[0_0_30px_rgba(0,245,255,0.3)] hover:shadow-[0_0_40px_rgba(0,245,255,0.5)]"
               >
@@ -340,32 +407,35 @@ export default function Home() {
                 <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-cyan-400 opacity-70 group-hover:opacity-100 group-hover:animate-ping" />
                 <div className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full bg-blue-400 opacity-70 group-hover:opacity-100 group-hover:animate-ping delay-75" />
               </motion.button>
-            </motion.div>
-          </motion.div>
+            )}
+          </div>
         </div>
 
-        {/* 3D Canvas with touch event handling */}
+        {/* 3D Canvas */}
         <div className="fixed inset-0 z-0">
           <Canvas 
             camera={{ position: [0, 0, 15], fov: 60 }}
-            style={{ touchAction: isMobile ? 'none' : 'auto' }}
+            dpr={[1, isMobile ? 1 : 1.5]}
+            performance={{ min: 0.8 }}
+            gl={{ antialias: false }}
           >
             <color attach="background" args={["#000000"]} />
-            <CyberGridBackground />
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1.5} />
-            <pointLight position={[-10, -10, -10]} intensity={0.8} color="#00faff" />
+            <CyberGridBackground animationProgress={animationProgress} />
+            <ambientLight intensity={0.5 * animationProgress} />
+            <pointLight position={[10, 10, 10]} intensity={1.5 * animationProgress} />
+            <pointLight position={[-10, -10, -10]} intensity={0.8 * animationProgress} color="#00faff" />
 
             {structures.map((props, i) => (
-              <NeuralStructure key={i} {...props} />
+              <NeuralStructure key={i} {...props} animationProgress={animationProgress} />
             ))}
 
-            {!isMobile && (
+            {!isMobile && animationProgress > 0.8 && (
               <OrbitControls
                 enableZoom={false}
                 autoRotate={false}
                 enablePan={false}
-                enableRotate={false}
+                enableRotate={true}
+                rotateSpeed={0.3}
                 minPolarAngle={Math.PI / 2}
                 maxPolarAngle={Math.PI / 2}
                 minDistance={10}
@@ -375,10 +445,10 @@ export default function Home() {
 
             <EffectComposer>
               <Bloom
-                intensity={2}
-                kernelSize={3}
-                luminanceThreshold={0.1}
-                luminanceSmoothing={0.9}
+                intensity={2 * animationProgress}
+                kernelSize={2}
+                luminanceThreshold={0.2}
+                luminanceSmoothing={0.8}
               />
             </EffectComposer>
           </Canvas>
