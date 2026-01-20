@@ -43,6 +43,22 @@ const BentoCard = ({ item, onClick }: BentoCardProps) => {
       whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)" }}
       className={`relative overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-[#0b0d14] to-[#050608] group cursor-pointer ${item.span}`}
     >
+      {/* Book Cover Background Image */}
+      {item.type === 'book' && item.coverImage && (
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
+          style={{
+            backgroundImage: `url(${item.coverImage})`,
+            filter: 'blur(2px) brightness(0.3)',
+          }}
+        />
+      )}
+      {/* Fallback gradient for items without cover images */}
+      {(!item.coverImage || item.type !== 'book') && (
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-[#0b0d14] to-[#050608]"
+        />
+      )}
       {/* Animated gradient overlay */}
       <motion.div
         className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"

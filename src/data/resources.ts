@@ -9,6 +9,7 @@ export interface ResourceItem {
   description: string;
   link: string;       
   downloadUrl?: string; 
+  coverImage?: string; // Optional cover image for books
   color: string;      
   span: string;
 }
@@ -24,6 +25,7 @@ export const resources: ResourceItem[] = [
     description: "The fundamental mathematical tools needed to understand machine learning.",
     link: "/books/mathematics-for-machine-learning.pdf", 
     downloadUrl: "/books/mathematics-for-machine-learning.pdf",
+    coverImage: "/books/covers/mathematics-for-machine-learning.jpg",
     color: "rgb(132, 0, 255)", // Purple
     span: "md:col-span-1 md:row-span-2", 
   },
@@ -36,6 +38,7 @@ export const resources: ResourceItem[] = [
     description: "A comprehensive guide to pattern recognition. The classic textbook.",
     link: "/books/pattern-recognition-and-machine-learning.pdf", 
     downloadUrl: "/books/pattern-recognition-and-machine-learning.pdf",
+    coverImage: "/books/covers/pattern-recognition-and-machine-learning.jpg",
     color: "rgb(6, 182, 212)", // Cyan
     span: "md:col-span-1 md:row-span-2", 
   },
@@ -48,6 +51,7 @@ export const resources: ResourceItem[] = [
     description: "Learn Scikit-Learn, Keras, and TensorFlow with practical examples.",
     link: "/books/hands-on-machine-learning.pdf",
     downloadUrl: "/books/hands-on-machine-learning.pdf",
+    coverImage: "/books/covers/hands-on-machine-learning.jpg",
     color: "rgb(255, 165, 0)", // Orange
     span: "md:col-span-1 md:row-span-2", 
   },
@@ -60,8 +64,100 @@ export const resources: ResourceItem[] = [
     description: "The Bible of Deep Learning. Covers theoretical foundations and modern architectures.",
     link: "/books/deep-learning.pdf",
     downloadUrl: "/books/deep-learning.pdf",
+    coverImage: "/books/covers/deep-learning.jpg",
     color: "rgb(236, 72, 153)", // Pink
     span: "md:col-span-1 md:row-span-2", 
+  },
+  {
+    id: "book-sutton-rl",
+    title: "Reinforcement Learning: An Introduction",
+    author: "Richard S. Sutton & Andrew G. Barto",
+    type: "book",
+    size: "5 MB",
+    description: "The foundational textbook on reinforcement learning, covering key algorithms and theory.",
+    link: "/books/Reinforcement Learning Richard S. Sutton and Andrew G. Barto.pdf",
+    downloadUrl: "/books/Reinforcement Learning Richard S. Sutton and Andrew G. Barto.pdf",
+    coverImage: "/books/covers/reinforcement-learning-sutton-barto.jpg",
+    color: "rgb(34, 197, 94)", // Green
+    span: "md:col-span-1 md:row-span-2",
+  },
+  {
+    id: "book-murphy-ml",
+    title: "Machine Learning: A Probabilistic Perspective",
+    author: "Kevin P. Murphy",
+    type: "book",
+    size: "30 MB",
+    description: "A comprehensive introduction to machine learning from a probabilistic viewpoint.",
+    link: "/books/ML Machine Learning-A Probabilistic Perspective.pdf",
+    downloadUrl: "/books/ML Machine Learning-A Probabilistic Perspective.pdf",
+    coverImage: "/books/covers/ml-probabilistic-perspective.jpg",
+    color: "rgb(249, 115, 22)", // Orange
+    span: "md:col-span-1 md:row-span-2",
+  },
+  {
+    id: "book-designing-ml",
+    title: "Designing Machine Learning Systems",
+    author: "Chip Huyen",
+    type: "book",
+    size: "10 MB",
+    description: "An iterative process for production-ready ML applications. Covers MLOps and system design.",
+    link: "/books/Designing Machine Learning Systems.pdf",
+    downloadUrl: "/books/Designing Machine Learning Systems.pdf",
+    coverImage: "/books/covers/designing-machine-learning-systems.jpg",
+    color: "rgb(168, 85, 247)", // Purple
+    span: "md:col-span-1 md:row-span-2",
+  },
+  {
+    id: "book-cuda-guide",
+    title: "CUDA C Programming Guide",
+    author: "NVIDIA",
+    type: "book",
+    size: "8 MB",
+    description: "Official NVIDIA guide for CUDA C programming and GPU computing fundamentals.",
+    link: "/books/CUDA_C_Programming_Guide.pdf",
+    downloadUrl: "/books/CUDA_C_Programming_Guide.pdf",
+    coverImage: "/books/covers/cuda-c-programming-guide.jpg",
+    color: "rgb(34, 211, 238)", // Cyan
+    span: "md:col-span-1 md:row-span-2",
+  },
+  {
+    id: "book-cuda-programming",
+    title: "CUDA Programming",
+    author: "Shane Cook",
+    type: "book",
+    size: "12 MB",
+    description: "A developer's guide to parallel computing with GPUs using CUDA.",
+    link: "/books/cuda-programming.pdf",
+    downloadUrl: "/books/cuda-programming.pdf",
+    coverImage: "/books/covers/cuda-programming.jpg",
+    color: "rgb(74, 222, 128)", // Green
+    span: "md:col-span-1 md:row-span-2",
+  },
+  {
+    id: "book-parallel-processors",
+    title: "Programming Massively Parallel Processors",
+    author: "David B. Kirk & Wen-mei W. Hwu",
+    type: "book",
+    size: "20 MB",
+    description: "A hands-on approach to parallel programming with CUDA and GPU architectures.",
+    link: "/books/programming-massively-parallel-processors-a-hands-on-approach-4nbsped-9780323912310_compress.pdf",
+    downloadUrl: "/books/programming-massively-parallel-processors-a-hands-on-approach-4nbsped-9780323912310_compress.pdf",
+    coverImage: "/books/covers/programming-massively-parallel-processors.jpg",
+    color: "rgb(251, 191, 36)", // Amber
+    span: "md:col-span-1 md:row-span-2",
+  },
+  {
+    id: "book-rl-intro",
+    title: "Reinforcement Learning",
+    author: "Various Authors",
+    type: "book",
+    size: "4 MB",
+    description: "Introduction to reinforcement learning concepts and algorithms.",
+    link: "/books/reinforcement learning.pdf",
+    downloadUrl: "/books/reinforcement learning.pdf",
+    coverImage: "/books/covers/reinforcement-learning.jpg",
+    color: "rgb(244, 63, 94)", // Rose
+    span: "md:col-span-1 md:row-span-2",
   },
 
   // --- VIDEOS (6 Items) ---
