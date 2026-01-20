@@ -80,7 +80,7 @@ function AnimatedNeuralNode({ position, color, size = 0.08, delay = 0, animation
   });
 
   return (
-    <Sphere ref={ref} args={[size, 16, 16]}>
+    <Sphere ref={ref} args={[size, 24, 24]}>
       <meshStandardMaterial
         color={color}
         emissive={color}
@@ -103,7 +103,7 @@ function NeuralStructure({
 
   const nodes = useMemo(() => {
     const nodePositions = [];
-    const nodeCount = 8; // Reduced for performance
+    const nodeCount = 12;
     const radius = 1.2;
     
     for (let i = 0; i < nodeCount; i++) {
@@ -123,10 +123,23 @@ function NeuralStructure({
     const conns = [];
     const nodeCount = nodes.length;
     
-    // Simplified connection logic
     for (let i = 0; i < nodeCount; i++) {
-      for (let j = i + 1; j < Math.min(i + 3, nodeCount); j++) {
-        conns.push([i, j]);
+      const distances = nodes.map((node, j) => ({
+        index: j,
+        distance: Math.hypot(
+          node[0] - nodes[i][0],
+          node[1] - nodes[i][1],
+          node[2] - nodes[i][2]
+        ),
+      }));
+      
+      distances.sort((a, b) => a.distance - b.distance);
+      
+      for (let j = 1; j <= 3 && j < distances.length; j++) {
+        const targetIndex = distances[j].index;
+        if (i < targetIndex) {
+          conns.push([i, targetIndex]);
+        }
       }
     }
     return conns;
@@ -145,7 +158,7 @@ function NeuralStructure({
           key={i} 
           position={pos} 
           color={color}
-          delay={i * 0.05} // Reduced delay
+          delay={i * 0.1}
           animationProgress={animationProgress}
         />
       ))}
@@ -168,9 +181,9 @@ function NeuralStructure({
             key={i}
             points={[startPos, endPos]}
             color={color}
-            lineWidth={1}
+            lineWidth={1.5}
             transparent
-            opacity={0.3 * animationProgress}
+            opacity={0.4 * animationProgress}
             toneMapped={false}
           />
         );
@@ -179,13 +192,14 @@ function NeuralStructure({
   );
 }
 
-function CyberGridBackground() {
+function CyberGridBackground({ animationProgress = 1 }) {
   const gridRef = useRef();
   
   useFrame((state) => {
-    if (gridRef.current) {
-      gridRef.current.position.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.5;
-      gridRef.current.position.y = Math.cos(state.clock.elapsedTime * 0.08) * 0.5;
+    if (gridRef.current && animationProgress > 0.5) {
+      const time = state.clock.elapsedTime;
+      gridRef.current.position.x = Math.sin(time * 0.1) * 0.5;
+      gridRef.current.position.y = Math.cos(time * 0.08) * 0.5;
     }
   });
 
@@ -198,7 +212,7 @@ function CyberGridBackground() {
           wireframe
           wireframeLinewidth={1}
           transparent
-          opacity={0.2}
+          opacity={0.2 * animationProgress}
         />
       </mesh>
       
@@ -209,7 +223,7 @@ function CyberGridBackground() {
           wireframe
           wireframeLinewidth={1}
           transparent
-          opacity={0.15}
+          opacity={0.15 * animationProgress}
         />
       </mesh>
       
@@ -217,9 +231,9 @@ function CyberGridBackground() {
         <mesh
           key={i}
           position={[
-            (Math.random() - 0.5) * 50,
-            (Math.random() - 0.5) * 50,
-            (Math.random() - 0.5) * 10
+            (Math.random() - 0.5) * 50 * animationProgress,
+            (Math.random() - 0.5) * 50 * animationProgress,
+            (Math.random() - 0.5) * 10 * animationProgress
           ]}
         >
           <sphereGeometry args={[0.03, 8, 8]} />
@@ -227,7 +241,7 @@ function CyberGridBackground() {
             color="#00faff"
             toneMapped={false}
             transparent
-            opacity={0.6}
+            opacity={0.6 * animationProgress}
           />
         </mesh>
       ))}
@@ -275,6 +289,7 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, [isComplete]);
 
+  // Use the EXACT same positions as original
   const structures = useMemo(() => {
     const positions = [
       [-8, 5, 2],
@@ -310,15 +325,12 @@ export default function Home() {
       [0, -5, -4],
     ];
 
-    // Reduce structures on mobile for performance
-    const filteredPositions = isMobile ? positions.slice(0, 15) : positions;
-    
-    return filteredPositions.map((position, i) => ({
+    return positions.map((position, i) => ({
       position,
       color: colors[i % colors.length],
       structureIndex: i,
     }));
-  }, [colors, isMobile]);
+  }, [colors]);
 
   const handleExploreClick = () => {
     if (typeof window !== "undefined") {
@@ -330,6 +342,9 @@ export default function Home() {
       behavior: 'smooth'
     });
   };
+
+  // Mobile camera adjustment - camera should be closer to see the same positions
+  const cameraConfig = isMobile ? { position: [0, 0, 20], fov: 45 } : { position: [0, 0, 15], fov: 60 };
 
   return (
     <div className="relative w-full min-h-screen bg-[#0b1117] overflow-hidden" suppressHydrationWarning>
@@ -344,11 +359,26 @@ export default function Home() {
           <div className={`flex flex-col items-center justify-center px-8 py-6 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-cyan-500/30 shadow-2xl text-center pointer-events-auto mx-4 ${isMobile ? 'mt-8 max-w-[90%]' : 'max-w-4xl'}`}>
             {/* Text appears only after neural networks spread */}
             {showText && (
-              <div className="flex flex-col items-center">
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.3,
+                      delayChildren: 0.2
+                    }
+                  }
+                }}
+                className="flex flex-col items-center"
+              >
                 <motion.h1
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  variants={{
+                    hidden: { opacity: 0, y: -20 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+                  }}
                   className={`${isMobile ? 'text-4xl' : 'text-3xl md:text-7xl'} font-bold text-cyan-200 drop-shadow-[0_0_20px_#00faff] mb-4 special-font`}
                   style={{ fontFamily: "Orbitron, sans-serif" }}
                 >
@@ -356,9 +386,10 @@ export default function Home() {
                 </motion.h1>
                 
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.9 },
+                    visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: "easeOut" } }
+                  }}
                   className={`${isMobile ? 'text-xl' : 'text-2xl md:text-5xl'} font-bold text-cyan-300 drop-shadow-[0_0_15px_#00d9ff] mb-4`}
                   style={{ fontFamily: "Orbitron, sans-serif" }}
                 >
@@ -366,15 +397,16 @@ export default function Home() {
                 </motion.div>
 
                 <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+                  }}
                   className={`mt-2 ${isMobile ? 'text-sm' : 'text-base md:text-xl'} text-blue-300 drop-shadow-[0_0_10px_#00d9ff] mb-8 md:mb-12`}
                   style={{ fontFamily: "Roboto, sans-serif" }}
                 >
                   THE OFFICIAL MACHINE LEARNING CLUB OF NIT ROURKELA
                 </motion.p>
-              </div>
+              </motion.div>
             )}
 
             {/* Button appears after text animation */}
@@ -414,10 +446,9 @@ export default function Home() {
         {/* 3D Canvas */}
         <div className="fixed inset-0 z-0">
           <Canvas 
-            camera={{ position: [0, 0, 15], fov: 60 }}
-            dpr={[1, isMobile ? 1 : 1.5]}
+            camera={cameraConfig}
+            dpr={[1, 1]} // Lower DPR for performance
             performance={{ min: 0.8 }}
-            gl={{ antialias: false }}
           >
             <color attach="background" args={["#000000"]} />
             <CyberGridBackground animationProgress={animationProgress} />
@@ -429,13 +460,12 @@ export default function Home() {
               <NeuralStructure key={i} {...props} animationProgress={animationProgress} />
             ))}
 
-            {!isMobile && animationProgress > 0.8 && (
+            {!isMobile && (
               <OrbitControls
                 enableZoom={false}
                 autoRotate={false}
                 enablePan={false}
-                enableRotate={true}
-                rotateSpeed={0.3}
+                enableRotate={false}
                 minPolarAngle={Math.PI / 2}
                 maxPolarAngle={Math.PI / 2}
                 minDistance={10}
@@ -446,9 +476,9 @@ export default function Home() {
             <EffectComposer>
               <Bloom
                 intensity={2 * animationProgress}
-                kernelSize={2}
-                luminanceThreshold={0.2}
-                luminanceSmoothing={0.8}
+                kernelSize={3}
+                luminanceThreshold={0.1}
+                luminanceSmoothing={0.9}
               />
             </EffectComposer>
           </Canvas>
