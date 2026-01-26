@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { Linkedin, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Linkedin, Instagram, Mail, Phone, MapPin , } from "lucide-react";
+import { FaWhatsapp } from 'react-icons/fa'
 
 const Glow = ({ className = "" }) => (
   <div
@@ -183,6 +184,17 @@ export default function Footer() {
             <div className="absolute inset-0 bg-pink-500/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative bg-white/5 border border-white/10 p-3 rounded-full group-hover:border-pink-400/50 group-hover:scale-110 transition-all duration-300">
               <Instagram className="w-6 h-6 text-slate-400 group-hover:text-pink-400 transition-colors" />
+            </div>
+          </a>
+            <a
+            href="https://chat.whatsapp.com/Ho5S0DbMuq6GIbStHvyTXE?mode=gi_t"
+            target="_blank"
+            rel="noreferrer"
+            className="group relative p-4"
+          >
+            <div className="absolute inset-0 bg-green-500/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative bg-white/5 border border-white/10 p-3 rounded-full group-hover:border-green-400/50 group-hover:scale-110 transition-all duration-300">
+              <FaWhatsapp className="w-6 h-6 text-slate-400 group-hover:text-green-400 transition-colors" />
             </div>
           </a>
         </div>
